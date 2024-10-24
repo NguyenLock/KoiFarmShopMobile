@@ -1,6 +1,6 @@
 // App.js
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, DrawerLayoutAndroid, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, DrawerLayoutAndroid } from 'react-native';
 import Header from './src/components/Header';
 import Footer from './src/components/Footer';
 import { useRef, useState } from 'react';
@@ -10,9 +10,13 @@ import ContactUs from './src/screen/ContactUs';
 import News from './src/screen/News';
 import Profile from './src/Customers/Profile';
 import Products from './src/screen/Products';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function App() {
+const Tab = createBottomTabNavigator();
+
+const HomeScreen = ({ navigation }) => {
   const drawer = useRef(null);
   const [currentScreen, setCurrentScreen] = useState('Home');
 
@@ -66,16 +70,10 @@ export default function App() {
         return <ContactUs />;
       case 'News':
         return <News />;
-      case 'Profile':
-        return <Profile />;
-      case 'Products':
-        return <Products />;
       default:
         return <Home />;
     }
   };
-
-  const showHeader = ['Home', 'AboutUs', 'ContactUs', 'News'].includes(currentScreen);
 
   return (
     <DrawerLayoutAndroid
@@ -84,60 +82,44 @@ export default function App() {
       drawerPosition={'left'}
       renderNavigationView={navigationView}>
       <View style={styles.container}>
-        {showHeader && (
-          <View style={styles.containerHeader}>
-            <Header drawerRef={drawer} />
-          </View>
-        )}
+        <View style={styles.containerHeader}>
+          <Header drawerRef={drawer} />
+        </View>
         <View style={styles.content}>
           {renderScreen()}
         </View>
-        <View style={styles.bottomTab}>
-          <TouchableOpacity 
-            style={styles.tabItem} 
-            onPress={() => setCurrentScreen('Home')}>
-            <Ionicons 
-              name="home" 
-              size={24} 
-              color={currentScreen === 'Home' ? '#470101' : '#666'} 
-            />
-            <Text style={[
-              styles.tabText, 
-              {color: currentScreen === 'Home' ? '#470101' : '#666'}
-            ]}>Home</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.tabItem} 
-            onPress={() => setCurrentScreen('Products')}>
-            <Ionicons 
-              name="cart" 
-              size={24} 
-              color={currentScreen === 'Products' ? '#470101' : '#666'} 
-            />
-            <Text style={[
-              styles.tabText, 
-              {color: currentScreen === 'Products' ? '#470101' : '#666'}
-            ]}>Products</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.tabItem} 
-            onPress={() => setCurrentScreen('Profile')}>
-            <Ionicons 
-              name="person" 
-              size={24} 
-              color={currentScreen === 'Profile' ? '#470101' : '#666'} 
-            />
-            <Text style={[
-              styles.tabText, 
-              {color: currentScreen === 'Profile' ? '#470101' : '#666'}
-            ]}>Profile</Text>
-          </TouchableOpacity>
-          
-        </View>
       </View>
     </DrawerLayoutAndroid>
+  );
+};
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Home') {
+              iconName = focused ? 'home' : 'home-outline';
+            } else if (route.name === 'Products') {
+              iconName = focused ? 'cart' : 'cart-outline';
+            } else if (route.name === 'Profile') {
+              iconName = focused ? 'person' : 'person-outline';
+            }
+
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: '#470101',
+          tabBarInactiveTintColor: '#666',
+          headerShown: false,
+        })}>
+        <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
+        <Tab.Screen name="Products" component={Products} options={{ title: 'Products'}}/>
+        <Tab.Screen name="Profile" component={Profile} options={{ title: 'Profile' }}/>
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
@@ -150,22 +132,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-  },
-  bottomTab: {
-    flexDirection: 'row',
-    height: 60,
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  tabItem: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  tabText: {
-    fontSize: 12,
-    marginTop: 4,
   },
   drawerContainer: {
     flex: 1,
