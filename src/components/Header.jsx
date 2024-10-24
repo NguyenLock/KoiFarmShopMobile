@@ -1,25 +1,40 @@
-import { View, Text, StyleSheet,Image } from 'react-native'
-import React from 'react'
+// Header.js
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function Header() {
-    
+export default function Header({ drawerRef }) {
   return (
     <View style={styles.header}>
-        <Image source={require('../../assets/logo-ca-koi.png')} style={styles.logo}/>
+      <TouchableOpacity 
+        style={styles.menuButton}
+        onPress={() => drawerRef.current.openDrawer()}>
+        <Ionicons name="menu" size={30} color="white" />
+      </TouchableOpacity>
+      <Image 
+        source={require('../../assets/logo-ca-koi.png')} 
+        style={styles.logo}
+      />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-    header: {
+  header: {
     width: '100%',
-    height:'auto',
-    backgroundColor: '#470101', 
+    height: '100%',
+    backgroundColor: '#470101',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
   },
   logo: {
     width: 100,
     height: 100,
-    resizeMode:'center',
-    alignSelf:'center',
+    resizeMode: 'center',
+    alignSelf: 'center',
+  },
+  menuButton: {
+    padding: 10,
   }
-})
+});
