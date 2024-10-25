@@ -5,6 +5,7 @@ import { CartProvider } from "./src/contexts/CartContext";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Checkout from "./src/Customers/Checkout";
 import History from "./src/Customers/History";
+import Detail from "./src/screen/Detail";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,11 @@ export default function App() {
             name="History"
             component={History}
             options={{ title: "History Transaction" }}
+          />
+          <Stack.Screen
+            name="Detail"
+            component={Detail}
+            options={{ title: "Koi Detail" }}
           />
         </Stack.Navigator>
       </NavigationContainer>

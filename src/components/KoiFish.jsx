@@ -1,100 +1,76 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function KoiFish({ item, onToggleAddToCart, isAddToCart }) {
   return (
-    <TouchableOpacity style={styles.container}>
-      <View style={styles.artToolCard}>
-        <View style={styles.imageWrapper}>
-          <Image source={{ uri: item.image }} style={styles.image} />
-        </View>
-        <View style={styles.info}>
-          <Text style={styles.artName}>{item.name}</Text>
-          <View style={styles.priceContainer}>
-            <Text style={styles.price}>${item.price}</Text>
-          </View>
-        </View>
-        <TouchableOpacity
-          onPress={onToggleAddToCart}
-          style={styles.addToCartButton}
-        >
-          <Ionicons
-            name={isAddToCart ? "heart" : "heart-outline"}
-            size={30}
-            color={isAddToCart ? "red" : "gray"}
-          />
-        </TouchableOpacity>
+    <View style={styles.container}>
+      <Image source={{ uri: item.image }} style={styles.image} />
+      <View style={styles.infoContainer}>
+        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.price}>${item.price}</Text>
       </View>
-    </TouchableOpacity>
+      <TouchableOpacity
+        onPress={onToggleAddToCart}
+        style={styles.addToCartButton}
+      >
+        <Ionicons
+          name={isAddToCart ? "checkmark-outline" : "cart-outline"}
+          color={isAddToCart ? "white" : "white"}
+        />
+        <Text style={styles.addToCartText}>
+          {isAddToCart ? "Added" : "Add to Cart"}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 15,
-    paddingHorizontal: 10,
-  },
-  artToolCard: {
     flexDirection: "row",
+    padding: 15,
+    marginBottom: 15,
     backgroundColor: "#fff",
     borderRadius: 10,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
     elevation: 5,
-    overflow: "hidden",
-  },
-  imageWrapper: {
-    position: "relative",
-    borderRadius: 10,
-    overflow: "hidden",
+    alignItems: "stretch",
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 120,
+    height: 120,
     borderRadius: 10,
   },
-  dealBadge: {
-    position: "absolute",
-    backgroundColor: "#FF3B30",
-    zIndex: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderBottomEndRadius: 10,
-  },
-  dealText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 12,
-  },
-  limitedPrice: {
-    textDecorationLine: "line-through",
-    marginLeft: 5,
-  },
-  priceContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  info: {
+  infoContainer: {
     flex: 1,
-    padding: 10,
+    marginLeft: 15,
     justifyContent: "center",
   },
-  artName: {
-    fontSize: 13,
+  name: {
+    fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 5,
-    color: "#333",
   },
   price: {
-    fontSize: 16,
-    color: "red",
-    fontWeight: "600",
+    fontSize: 18,
+    color: "#3B7B7A",
+    marginTop: 5,
   },
   addToCartButton: {
     justifyContent: "center",
     alignItems: "center",
-    paddingRight: 15,
+    width: 65,
+    backgroundColor: "#3B7B7A",
+    borderRadius: 10,
+    paddingVertical: 10,
+    marginLeft: 10,
+    elevation: 3,
+  },
+  addToCartText: {
+    marginLeft: 5,
+    fontSize: 16,
+    color: "white",
   },
 });

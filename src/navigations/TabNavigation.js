@@ -10,6 +10,8 @@ import DrawerNavigation from "./DrawerNavigation";
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
+  const { cart } = useContext(CartContext);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -20,7 +22,7 @@ const TabNavigation = () => {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Products") {
             iconName = focused ? "fish" : "fish-outline";
-          } else if (route.name === "Carts") {
+          } else if (route.name === "Cart") {
             iconName = focused ? "cart" : "cart-outline";
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
@@ -44,15 +46,12 @@ const TabNavigation = () => {
         options={{ title: "Koi Fishes" }}
       />
       <Tab.Screen
-        name="Carts"
+        name="Cart"
         component={Cart}
-        options={({ navigation }) => {
-          const { cart } = useContext(CartContext);
-          return {
-            title: "Cart",
-            headerShown: true,
-            tabBarBadge: cart.length,
-          };
+        options={{
+          title: "Cart",
+          headerShown: true,
+          tabBarBadge: cart.length,
         }}
       />
       <Tab.Screen
