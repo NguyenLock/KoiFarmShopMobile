@@ -17,8 +17,12 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     const loadOrders = async () => {
-      const storedOrders = await AsyncStorage.getItem("orders");
-      setOrders(storedOrders ? JSON.parse(storedOrders) : []);
+      const response = await AsyncStorage.getItem("orders");
+      const storedOrders = response ? JSON.parse(response) : [];
+      storedOrders.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      setOrders(storedOrders);
     };
     loadOrders();
   }, []);

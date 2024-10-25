@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginVertical: 20,
     textAlign: "center",
+    color: "#470101",
   },
   noOrdersText: {
     textAlign: "center",
@@ -78,9 +79,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   orderTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
+    fontSize: 16,
+    marginBottom: 20,
   },
   orderDetail: {
     fontSize: 16,
@@ -135,35 +135,7 @@ const styles = StyleSheet.create({
   fishName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "black",
+    color: "#470101",
     marginBottom: 4,
-  },
-  priceContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#4CAF50",
-  },
-  quantityContainer: {
-    width: "auto",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    marginTop: 10,
-    backgroundColor: "#F0F0F0",
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-    zIndex: 1,
-  },
-  quantityText: {
-    fontSize: 18,
-    fontWeight: "500",
-    color: "black",
-    marginHorizontal: 10,
   },
 });

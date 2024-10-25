@@ -6,6 +6,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Checkout from "./src/Customers/Checkout";
 import History from "./src/Customers/History";
 import AwardCertificate from "./src/Customers/AwardCertificate";
+import Dashboard from "./src/Admin/Dashboard";
+import CustomerManager from "./src/Admin/CustomerManager";
+import KoiManager from "./src/Admin/KoiManager";
+import OrderManager from "./src/Admin/OrderManager";
 
 const Stack = createNativeStackNavigator();
 
@@ -50,6 +54,58 @@ export default function App() {
             component={AwardCertificate}
             options={{
               title: "Certificate",
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "#470101",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="Dashboard"
+            component={Dashboard}
+            options={{
+              title: "Dashboard",
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "#470101",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="CustomerManagement"
+            component={CustomerManager}
+            options={{
+              title: "Customer Management",
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "#470101",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="KoiManagement"
+            component={KoiManager}
+            options={{
+              title: "Koi Management",
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "#470101",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="OrderManagement"
+            component={OrderManager}
+            options={{
+              title: "Order Management",
               headerShown: true,
               headerTitleAlign: "center",
               headerStyle: {
