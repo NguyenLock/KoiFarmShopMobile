@@ -11,10 +11,12 @@ export default function Header({ drawerRef }) {
         onPress={() => drawerRef.current.openDrawer()}>
         <Ionicons name="menu" size={30} color="white" />
       </TouchableOpacity>
+      <View style={styles.logoContainer}>
       <Image 
         source={require('../../assets/logo-ca-koi.png')} 
         style={styles.logo}
       />
+      </View>
     </View>
   );
 }
@@ -26,7 +28,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#470101',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    justifyContent: 'space-between',
   },
   logo: {
     width: 100,
@@ -34,7 +36,16 @@ const styles = StyleSheet.create({
     resizeMode: 'center',
     alignSelf: 'center',
   },
+  logoContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   menuButton: {
     padding: 10,
+    width:50,
+    zIndex:1
   }
 });
