@@ -9,10 +9,15 @@ export default function Profile() {
     navigation.navigate("History");
   };
 
+  const navigateToCertificate = () => {
+    navigation.navigate("AwardCertificate");
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
       <Button title="View Order History" onPress={navigateToHistory} />
+      <Button title="View Award Certificates" onPress={navigateToCertificate} />
     </View>
   );
 }

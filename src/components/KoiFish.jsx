@@ -4,12 +4,12 @@ import { Ionicons } from "@expo/vector-icons";
 export default function KoiFish({ item, onToggleAddToCart, isAddToCart }) {
   return (
     <TouchableOpacity style={styles.container}>
-      <View style={styles.artToolCard}>
+      <View style={styles.fishCard}>
         <View style={styles.imageWrapper}>
           <Image source={{ uri: item.image }} style={styles.image} />
         </View>
         <View style={styles.info}>
-          <Text style={styles.artName}>{item.name}</Text>
+          <Text style={styles.fishName}>{item.name}</Text>
           <View style={styles.priceContainer}>
             <Text style={styles.price}>${item.price}</Text>
           </View>
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     paddingHorizontal: 10,
   },
-  artToolCard: {
+  fishCard: {
     flexDirection: "row",
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: "center",
   },
-  artName: {
+  fishName: {
     fontSize: 13,
     fontWeight: "bold",
     marginBottom: 5,
