@@ -1,4 +1,3 @@
-// App.js
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, DrawerLayoutAndroid } from 'react-native';
 import Header from './src/components/Header';
@@ -11,14 +10,18 @@ import News from './src/screen/News';
 import Profile from './src/Customers/Profile';
 import Products from './src/screen/Products';
 import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
+const HomeStack = createNativeStackNavigator();
+const ProductStack = createNativeStackNavigator();
+const ProfileStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const HomeScreen = ({ navigation }) => {
+// Component chính cho Home với Drawer
+const HomeWithDrawer = ({ navigation }) => {
   const drawer = useRef(null);
-  const [currentScreen, setCurrentScreen] = useState('Home');
 
   const navigationView = () => (
     <View style={styles.drawerContainer}>
@@ -27,7 +30,7 @@ const HomeScreen = ({ navigation }) => {
         <Text 
           style={styles.drawerItem} 
           onPress={() => {
-            setCurrentScreen('Home');
+            navigation.navigate('HomeMain');
             drawer.current.closeDrawer();
           }}>
           Home
@@ -35,7 +38,7 @@ const HomeScreen = ({ navigation }) => {
         <Text 
           style={styles.drawerItem} 
           onPress={() => {
-            setCurrentScreen('AboutUs');
+            navigation.navigate('AboutUs');
             drawer.current.closeDrawer();
           }}>
           About Us
@@ -43,7 +46,7 @@ const HomeScreen = ({ navigation }) => {
         <Text 
           style={styles.drawerItem} 
           onPress={() => {
-            setCurrentScreen('ContactUs');
+            navigation.navigate('ContactUs');
             drawer.current.closeDrawer();
           }}>
           Contact Us
@@ -51,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
         <Text 
           style={styles.drawerItem} 
           onPress={() => {
-            setCurrentScreen('News');
+            navigation.navigate('News');
             drawer.current.closeDrawer();
           }}>
           News
@@ -59,21 +62,6 @@ const HomeScreen = ({ navigation }) => {
       </View>
     </View>
   );
-
-  const renderScreen = () => {
-    switch(currentScreen) {
-      case 'Home':
-        return <Home />;
-      case 'AboutUs':
-        return <AboutUs />;
-      case 'ContactUs':
-        return <ContactUs />;
-      case 'News':
-        return <News />;
-      default:
-        return <Home />;
-    }
-  };
 
   return (
     <DrawerLayoutAndroid
@@ -86,12 +74,88 @@ const HomeScreen = ({ navigation }) => {
           <Header drawerRef={drawer} />
         </View>
         <View style={styles.content}>
-          {renderScreen()}
+          <Home navigation={navigation} />
         </View>
       </View>
     </DrawerLayoutAndroid>
   );
 };
+
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator>
+      <HomeStack.Screen 
+        name="HomeMain" 
+        component={HomeWithDrawer}
+        options={{
+          headerShown: false
+        }}
+      />
+      <HomeStack.Screen 
+        name="AboutUs" 
+        component={AboutUs}
+        options={{
+          headerShown: false
+          
+        }}
+      />
+      <HomeStack.Screen 
+        name="ContactUs" 
+        component={ContactUs}
+        options={{
+          headerShown: false
+        }}
+      />
+      <HomeStack.Screen 
+        name="News" 
+        component={News}
+        options={{
+          title: 'News',
+          headerStyle: {
+            backgroundColor: '#470101',
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+    </HomeStack.Navigator>
+  );
+}
+
+function ProductStackScreen() {
+  return (
+    <ProductStack.Navigator>
+      <ProductStack.Screen 
+        name="ProductsList" 
+        component={Products}
+        options={{
+          title: 'Products',
+          headerStyle: {
+            backgroundColor: '#470101',
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+    </ProductStack.Navigator>
+  );
+}
+
+function ProfileStackScreen() {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen 
+        name="ProfileMain" 
+        component={Profile}
+        options={{
+          title: 'Profile',
+          headerStyle: {
+            backgroundColor: '#470101',
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+    </ProfileStack.Navigator>
+  );
+}
 
 export default function App() {
   return (
@@ -114,10 +178,24 @@ export default function App() {
           tabBarActiveTintColor: '#470101',
           tabBarInactiveTintColor: '#666',
           headerShown: false,
-        })}>
-        <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
-        <Tab.Screen name="Products" component={Products} options={{ title: 'Products'}}/>
-        <Tab.Screen name="Profile" component={Profile} options={{ title: 'Profile' }}/>
+          tabBarStyle: {
+            height: 60,
+            paddingBottom: 5,
+          }
+        })}
+      >
+        <Tab.Screen 
+          name="Home" 
+          component={HomeStackScreen}
+        />
+        <Tab.Screen 
+          name="Products" 
+          component={ProductStackScreen}
+        />
+        <Tab.Screen 
+          name="Profile" 
+          component={ProfileStackScreen}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );
