@@ -59,7 +59,7 @@ export default function Cart({ navigation }) {
                         <Ionicons
                           name="remove-circle-outline"
                           size={28}
-                          color={item.quantity === 1 ? "#ccc" : "black"}
+                          color={item.quantity === 1 ? "#ccc" : "#470101"}
                         />
                       </TouchableOpacity>
                       <Text style={styles.quantityText}>{item.quantity}</Text>
@@ -69,7 +69,7 @@ export default function Cart({ navigation }) {
                         <Ionicons
                           name="add-circle-outline"
                           size={28}
-                          color="black"
+                          color="#470101"
                         />
                       </TouchableOpacity>
                     </View>
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    backgroundColor: "red",
+    backgroundColor: "#470101",
     position: "absolute",
     bottom: 10,
     right: 10,
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   totalText: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#333",
+    color: "#470101",
   },
   checkoutButton: {
     marginTop: 10,
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
   fishName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "black",
+    color: "#470101",
     marginBottom: 4,
   },
   priceContainer: {
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
   quantityText: {
     fontSize: 18,
     fontWeight: "500",
-    color: "black",
+    color: "#470101",
     marginHorizontal: 10,
   },
   removeButton: {

@@ -10,7 +10,7 @@ export default function Profile() {
   };
 
   const navigateToCertificate = () => {
-    navigation.navigate("AwardCertificate");
+    navigation.navigate("Certificate");
   }
 
   return (

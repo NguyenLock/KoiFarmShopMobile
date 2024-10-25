@@ -13,6 +13,7 @@ import {
 import { Card, Button, Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 import { CartContext } from "../contexts/CartContext";
+import OrderDetailItem from "../components/OrderDetailItem";
 
 const Checkout = () => {
   const navigation = useNavigation();
@@ -26,6 +27,11 @@ const Checkout = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [voucher, setVoucher] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState("Cash On Delivery");
+
+  const handleSelect = (option) => {
+    setSelectedPayment(option);
+  };
 
   const { cart, clearCart, saveOrder } = useContext(CartContext);
 
@@ -33,7 +39,13 @@ const Checkout = () => {
     if (!fullName || !phone || !address) {
       Alert.alert("Error", "Please fill out all required fields.");
     } else {
-      const orderDetail = { fullName, phone, address, voucher };
+      const orderDetail = {
+        fullName,
+        phone,
+        address,
+        voucher,
+        selectedPayment,
+      };
       await saveOrder(orderDetail, total);
       clearCart();
       Alert.alert("Order Placed", `Thank you for your purchase, ${fullName}!`);
@@ -89,44 +101,20 @@ const Checkout = () => {
             return (
               <Card containerStyle={styles.card}>
                 <Text style={styles.sectionTitle}>Order Summary</Text>
-                <FlatList
-                  data={cart}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => (
-                    <View style={styles.fishContainer}>
-                      <View style={styles.fishCard}>
-                        <View style={styles.imageWrapper}>
-                          <Image
-                            source={{ uri: item.image }}
-                            style={styles.image}
-                          />
-                        </View>
-                        <View style={styles.info}>
-                          <Text style={styles.fishName}>{item.name}</Text>
-                          <View style={styles.priceContainer}>
-                            <Text style={styles.price}>${item.price}</Text>
-                          </View>
-                          <View style={styles.quantityContainer}>
-                            <Text style={styles.quantityText}>
-                              {item.quantity}
-                            </Text>
-                          </View>
-                        </View>
-                      </View>
-                    </View>
-                  )}
-                />
+                {cart.map((item, i) => (
+                  <OrderDetailItem key={i} item={item} />
+                ))}
                 <View style={styles.orderItem}>
                   <Text style={styles.itemText}>Subtotal:</Text>
-                  <Text style={styles.priceText}>${calculateTotal()}</Text>
+                  <Text style={styles.priceItem}>${calculateTotal()}</Text>
                 </View>
                 <View style={styles.orderItem}>
                   <Text style={styles.itemText}>Shipping fee:</Text>
-                  <Text style={styles.priceText}>${shippingFee}</Text>
+                  <Text style={styles.priceItem}>${shippingFee}</Text>
                 </View>
                 <View style={styles.orderItem}>
                   <Text style={styles.itemText}>Tax:</Text>
-                  <Text style={styles.priceText}>${tax}</Text>
+                  <Text style={styles.priceItem}>${tax}</Text>
                 </View>
                 <View style={styles.totalContainer}>
                   <Text style={styles.totalText}>Total:</Text>
@@ -144,32 +132,61 @@ const Checkout = () => {
             return (
               <Card containerStyle={styles.card}>
                 <Text style={styles.sectionTitle}>Payment Method</Text>
-                <TouchableOpacity style={styles.paymentOption}>
+                <TouchableOpacity
+                  style={styles.paymentOption}
+                  onPress={() => handleSelect("Credit Card")}
+                >
                   <Icon
-                    name="credit-card"
+                    name={
+                      selectedPayment === "Credit Card"
+                        ? "dot-circle-o"
+                        : "circle-o"
+                    }
                     type="font-awesome"
                     size={24}
-                    color="#333"
+                    color={
+                      selectedPayment === "Credit Card" ? "#4CAF50" : "#ccc"
+                    }
                   />
                   <Text style={styles.optionText}>Credit Card</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.paymentOption}>
+                <TouchableOpacity
+                  style={styles.paymentOption}
+                  onPress={() => handleSelect("Smart Banking")}
+                >
                   <Icon
-                    name="paypal"
+                    name={
+                      selectedPayment === "Smart Banking"
+                        ? "dot-circle-o"
+                        : "circle-o"
+                    }
                     type="font-awesome"
                     size={24}
-                    color="#333"
+                    color={
+                      selectedPayment === "Smart Banking" ? "#4CAF50" : "#ccc"
+                    }
                   />
-                  <Text style={styles.optionText}>PayPal</Text>
+                  <Text style={styles.optionText}>Smart Banking</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.paymentOption}>
+                <TouchableOpacity
+                  style={styles.paymentOption}
+                  onPress={() => handleSelect("Cash On Delivery")}
+                >
                   <Icon
-                    name="bank"
+                    name={
+                      selectedPayment === "Cash On Delivery"
+                        ? "dot-circle-o"
+                        : "circle-o"
+                    }
                     type="font-awesome"
                     size={24}
-                    color="#333"
+                    color={
+                      selectedPayment === "Cash On Delivery"
+                        ? "#4CAF50"
+                        : "#ccc"
+                    }
                   />
-                  <Text style={styles.optionText}>Bank Transfer</Text>
+                  <Text style={styles.optionText}>Cash On Delivery</Text>
                 </TouchableOpacity>
               </Card>
             );
@@ -210,7 +227,8 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 20,
+    color: "#470101",
   },
   input: {
     borderWidth: 1,
@@ -228,9 +246,13 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
   },
+  priceItem: {
+    fontSize: 16,
+  },
   priceText: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "#470101",
   },
   totalContainer: {
     flexDirection: "row",
@@ -243,6 +265,7 @@ const styles = StyleSheet.create({
   totalText: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#470101",
   },
   paymentOption: {
     flexDirection: "row",
@@ -261,69 +284,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     marginVertical: 20,
     borderRadius: 12,
-  },
-  //---------------------------------------------------------------------------------
-  fishContainer: {
-    marginBottom: 15,
-  },
-  fishCard: {
-    flexDirection: "row",
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    padding: 10,
-    alignItems: "center",
-  },
-  imageWrapper: {
-    borderRadius: 12,
-    overflow: "hidden",
-    width: 120,
-    height: 120,
-    marginRight: 12,
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-  },
-  info: {
-    flex: 1,
-    justifyContent: "center",
-    paddingHorizontal: 10,
-  },
-  fishName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "black",
-    marginBottom: 4,
-  },
-  priceContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#4CAF50",
-  },
-  quantityContainer: {
-    width: "auto",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    marginTop: 10,
-    backgroundColor: "#F0F0F0",
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-    zIndex: 1,
-  },
-  quantityText: {
-    fontSize: 18,
-    fontWeight: "500",
-    color: "black",
-    marginHorizontal: 10,
   },
 });
 
