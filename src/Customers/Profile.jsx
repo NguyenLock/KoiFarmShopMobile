@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function Profile() {
@@ -11,13 +11,17 @@ export default function Profile() {
 
   const navigateToCertificate = () => {
     navigation.navigate("Certificate");
-  }
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
-      <Button title="View Order History" onPress={navigateToHistory} />
-      <Button title="View Award Certificates" onPress={navigateToCertificate} />
+      <TouchableOpacity style={styles.button} onPress={navigateToHistory}>
+        <Text style={styles.buttonText}>View Order History</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={navigateToCertificate}>
+        <Text style={styles.buttonText}>View Award Certificates</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -27,10 +31,28 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#f9f9f9",
+    padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 20,
+    color: "#470101",
+    marginBottom: 30,
+  },
+  button: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 8,
+    marginVertical: 10,
+    width: "80%",
+    alignItems: "center",
+    elevation: 3,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

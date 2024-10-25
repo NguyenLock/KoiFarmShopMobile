@@ -26,7 +26,7 @@ export default function Cart({ navigation }) {
   };
 
   const calculateTotal = () => {
-    return cart.reduce((total, item) => total + item.price, 0).toFixed(2);
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
   };
 
   return (
@@ -144,13 +144,13 @@ export default function Cart({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f9f9f9",
     padding: 10,
     marginTop: 10,
   },
   containerNothing: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f9f9f9",
     padding: 10,
     justifyContent: "center",
     alignItems: "center",

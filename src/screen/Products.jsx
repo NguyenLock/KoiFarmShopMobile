@@ -49,13 +49,13 @@ export default function Products() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f9f9f9",
     padding: 10,
     marginVertical: 10,
   },
   containerNothing: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f9f9f9",
     padding: 10,
     justifyContent: "center",
     alignItems: "center",
