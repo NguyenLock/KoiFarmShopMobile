@@ -12,10 +12,10 @@ export default function Header({ drawerRef }) {
         <Ionicons name="menu" size={30} color="white" />
       </TouchableOpacity>
       <View style={styles.logoContainer}>
-      <Image 
-        source={require('../../assets/logo-ca-koi.png')} 
-        style={styles.logo}
-      />
+        <Image 
+          source={require('../../assets/logo-ca-koi.png')} 
+          style={styles.logo}
+        />
       </View>
     </View>
   );
@@ -24,7 +24,7 @@ export default function Header({ drawerRef }) {
 const styles = StyleSheet.create({
   header: {
     width: '100%',
-    height: '100%',
+    height: 60,  // Đặt chiều cao cụ thể cho Header
     backgroundColor: '#470101',
     flexDirection: 'row',
     alignItems: 'center',
@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     resizeMode: 'center',
-    alignSelf: 'center',
   },
   logoContainer: {
     position: 'absolute',
@@ -45,7 +44,7 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     padding: 10,
-    width:50,
-    zIndex:1
+    width: 50,
+    zIndex: 1,
   }
 });
