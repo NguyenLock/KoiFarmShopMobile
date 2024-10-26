@@ -6,6 +6,7 @@ import Products from "../screen/Products";
 import Cart from "../Customers/Cart";
 import Profile from "../Customers/Profile";
 import DrawerNavigation from "./DrawerNavigation";
+import AdminPage from "../Admin/AdminPage";
 
 const Tab = createBottomTabNavigator();
 
@@ -25,6 +26,8 @@ const TabNavigation = () => {
           } else if (route.name === "Cart") {
             iconName = focused ? "cart" : "cart-outline";
           } else if (route.name === "Profile") {
+            iconName = focused ? "person" : "person-outline";
+          } else if (route.name === "Admin") {
             iconName = focused ? "person" : "person-outline";
           }
 
@@ -72,6 +75,19 @@ const TabNavigation = () => {
         component={Profile}
         options={{
           title: "Profile",
+          headerShown: true,
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "#470101",
+          },
+          headerTintColor: "#fff",
+        }}
+      />
+      <Tab.Screen
+        name="Admin"
+        component={AdminPage}
+        options={{
+          title: "Admin",
           headerShown: true,
           headerTitleAlign: "center",
           headerStyle: {
