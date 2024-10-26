@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -10,12 +10,14 @@ import {
   ImageBackground,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { CartContext } from "../contexts/CartContext";
 
 export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigation = useNavigation();
+  const { setUser } = useContext(CartContext);
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
@@ -24,6 +26,22 @@ export default function Register() {
     }
 
     try {
+      const existingUsersResponse = await fetch(
+        "https://6715cc1b33bc2bfe40bb27f5.mockapi.io/users"
+      );
+      const existingUsers = await existingUsersResponse.json();
+
+      const isUsernameTaken = existingUsers.some(
+        (user) => user.username === username
+      );
+
+      if (isUsernameTaken) {
+        Alert.alert(
+          "Username already exists. Please choose a different username."
+        );
+        return;
+      }
+
       const response = await fetch(
         "https://6715cc1b33bc2bfe40bb27f5.mockapi.io/users",
         {
@@ -34,13 +52,16 @@ export default function Register() {
       );
 
       if (response.ok) {
-        Alert.alert("Registration successful! Please log in.");
-        navigation.navigate("Login");
+        const data = await response.json();
+        Alert.alert("Registration successful!");
+        setUser(data);
+        navigation.navigate("Home");
       } else {
         Alert.alert("Registration failed. Please try again.");
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error during registration:", error);
+      Alert.alert("An error occurred. Please try again.");
     }
   };
 

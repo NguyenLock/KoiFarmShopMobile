@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -9,11 +9,13 @@ import {
   ImageBackground,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { CartContext } from "../contexts/CartContext";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
+  const { setUser } = useContext(CartContext);
 
   const handleLogin = async () => {
     try {
@@ -27,7 +29,12 @@ export default function Login() {
 
       if (user) {
         Alert.alert("Login successful!");
-        navigation.navigate("Home");
+        setUser(user);
+        if (user.role === "admin") {
+          navigation.navigate("Admin");
+        } else {
+          navigation.navigate("Home");
+        }
       } else {
         Alert.alert("Invalid username or password.");
       }
