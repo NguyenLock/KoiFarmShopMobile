@@ -11,6 +11,8 @@ import AdminPage from "../Admin/AdminPage";
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
+  const { cart } = useContext(CartContext);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -21,7 +23,7 @@ const TabNavigation = () => {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Products") {
             iconName = focused ? "fish" : "fish-outline";
-          } else if (route.name === "Carts") {
+          } else if (route.name === "Cart") {
             iconName = focused ? "cart" : "cart-outline";
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
@@ -55,20 +57,17 @@ const TabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="Carts"
+        name="Cart"
         component={Cart}
-        options={({ navigation }) => {
-          const { cart } = useContext(CartContext);
-          return {
-            title: "Cart",
-            headerShown: true,
-            tabBarBadge: cart.length,
-            headerTitleAlign: "center",
+        options={{
+          title: "Cart",
+          headerShown: true,
+          tabBarBadge: cart.length,
+          headerTitleAlign: "center",
             headerStyle: {
               backgroundColor: "#470101",
             },
             headerTintColor: "#fff",
-          };
         }}
       />
       <Tab.Screen

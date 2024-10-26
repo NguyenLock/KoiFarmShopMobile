@@ -11,10 +11,12 @@ export default function Header({ drawerRef }) {
         onPress={() => drawerRef.current.openDrawer()}>
         <Ionicons name="menu" size={30} color="white" />
       </TouchableOpacity>
-      <Image 
-        source={require('../../assets/logo-ca-koi.png')} 
-        style={styles.logo}
-      />
+      <View style={styles.logoContainer}>
+        <Image 
+          source={require('../../assets/logo-ca-koi.png')} 
+          style={styles.logo}
+        />
+      </View>
     </View>
   );
 }
@@ -22,19 +24,27 @@ export default function Header({ drawerRef }) {
 const styles = StyleSheet.create({
   header: {
     width: '100%',
-    height: '100%',
+    height: 60,  // Đặt chiều cao cụ thể cho Header
     backgroundColor: '#470101',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    justifyContent: 'space-between',
   },
   logo: {
     width: 100,
     height: 100,
     resizeMode: 'center',
-    alignSelf: 'center',
+  },
+  logoContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   menuButton: {
     padding: 10,
+    width: 50,
+    zIndex: 1,
   }
 });
