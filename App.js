@@ -11,6 +11,8 @@ import Dashboard from "./src/Admin/Dashboard";
 import CustomerManager from "./src/Admin/CustomerManager";
 import KoiManager from "./src/Admin/KoiManager";
 import OrderManager from "./src/Admin/OrderManager";
+import Login from "./src/screen/Login";
+import Register from "./src/screen/Register";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +25,28 @@ export default function App() {
             name="Tabs"
             component={TabNavigation}
             options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              title: "Login",
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: { backgroundColor: "#470101" },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="Register"
+            component={Register}
+            options={{
+              title: "Register",
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: { backgroundColor: "#470101" },
+              headerTintColor: "#fff",
+            }}
           />
           <Stack.Screen
             name="Checkout"
