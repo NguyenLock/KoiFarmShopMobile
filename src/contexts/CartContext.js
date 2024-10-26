@@ -5,6 +5,7 @@ export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const loadCart = async () => {
@@ -14,41 +15,89 @@ export const CartProvider = ({ children }) => {
     loadCart();
   }, []);
 
+  useEffect(() => {
+    const loadOrders = async () => {
+      const storedOrders = await AsyncStorage.getItem("orders");
+      setOrders(storedOrders ? JSON.parse(storedOrders) : []);
+    };
+    loadOrders();
+  }, []);
+
   const toggleCart = async (item) => {
     let updatedCart = [...cart];
-    if (updatedCart.some((c) => c.id === item.id)) {
-      updatedCart = updatedCart.filter((c) => c.id !== item.id);
+    const existingItemIndex = updatedCart.findIndex((c) => c.id === item.id);
+
+    if (existingItemIndex > -1) {
+      updatedCart.splice(existingItemIndex, 1);
     } else {
-      updatedCart.push(item);
+      updatedCart.push({ ...item, quantity: 1 });
     }
     setCart(updatedCart);
     await AsyncStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  const clearCart = () => {
-    setCart([]);
+  const increaseQuantity = async (itemId) => {
+    const updatedCart = cart.map((item) =>
+      item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
+    );
+    setCart(updatedCart);
+    await AsyncStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  const saveOrder = async (orderDetails) => {
+  const decreaseQuantity = async (itemId) => {
+    const updatedCart = cart.map((item) => {
+      if (item.id === itemId) {
+        const newQuantity = item.quantity > 1 ? item.quantity - 1 : 1;
+        return { ...item, quantity: newQuantity };
+      }
+      return item;
+    });
+    setCart(updatedCart);
+    await AsyncStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+  const clearCart = async () => {
+    setCart([]);
+    await AsyncStorage.removeItem("cart");
+  };
+
+  const saveOrder = async (orderDetails, total) => {
     const order = {
       id: new Date().getTime(),
       items: cart,
       details: orderDetails,
+      total: total,
+      status: "Pending",
+      createdAt: new Date(),
     };
-    let orders = await AsyncStorage.getItem("orders");
-    orders = orders ? JSON.parse(orders) : [];
-    orders.push(order);
-    await AsyncStorage.setItem("orders", JSON.stringify(orders));
+    const updatedOrders = [...orders, order];
+    setOrders(updatedOrders);
+    await AsyncStorage.setItem("orders", JSON.stringify(updatedOrders));
   };
 
   const getOrders = async () => {
-    const orders = await AsyncStorage.getItem("orders");
-    return orders ? JSON.parse(orders) : [];
+    const storedOrders = await AsyncStorage.getItem("orders");
+    setOrders(storedOrders ? JSON.parse(storedOrders) : []);
+  };
+
+  const clearOrders = async () => {
+    setOrders([]);
+    await AsyncStorage.removeItem("orders");
   };
 
   return (
     <CartContext.Provider
-      value={{ cart, toggleCart, clearCart, saveOrder, getOrders }}
+      value={{
+        cart,
+        orders,
+        toggleCart,
+        increaseQuantity,
+        decreaseQuantity,
+        clearCart,
+        saveOrder,
+        getOrders,
+        clearOrders,
+      }}
     >
       {children}
     </CartContext.Provider>

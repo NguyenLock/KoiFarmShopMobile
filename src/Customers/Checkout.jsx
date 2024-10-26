@@ -7,18 +7,31 @@ import {
   ScrollView,
   Alert,
   TextInput,
+  FlatList,
+  Image,
 } from "react-native";
 import { Card, Button, Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 import { CartContext } from "../contexts/CartContext";
+import OrderDetailItem from "../components/OrderDetailItem";
 
 const Checkout = () => {
   const navigation = useNavigation();
-
+  const sections = [
+    { key: "yourInformation" },
+    { key: "orderSummary" },
+    { key: "paymentMethod" },
+    { key: "placeOrderButton" },
+  ];
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [voucher, setVoucher] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState("Cash On Delivery");
+
+  const handleSelect = (option) => {
+    setSelectedPayment(option);
+  };
 
   const { cart, clearCart, saveOrder } = useContext(CartContext);
 
@@ -26,8 +39,14 @@ const Checkout = () => {
     if (!fullName || !phone || !address) {
       Alert.alert("Error", "Please fill out all required fields.");
     } else {
-      const orderDetails = { fullName, phone, address, voucher };
-      await saveOrder(orderDetails);
+      const orderDetail = {
+        fullName,
+        phone,
+        address,
+        voucher,
+        selectedPayment,
+      };
+      await saveOrder(orderDetail, total);
       clearCart();
       Alert.alert("Order Placed", `Thank you for your purchase, ${fullName}!`);
       navigation.navigate("Home");
@@ -35,7 +54,9 @@ const Checkout = () => {
   };
 
   const calculateTotal = () => {
-    return cart.reduce((total, item) => total + item.price, 0).toFixed(2);
+    return cart
+      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .toFixed(2);
   };
 
   const shippingFee = (calculateTotal() * 0.1).toFixed(2);
@@ -49,83 +70,143 @@ const Checkout = () => {
   ).toFixed(2);
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>Checkout</Text>
-
-      <Card containerStyle={styles.card}>
-        <Text style={styles.sectionTitle}>Your Information</Text>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Full Name"
-          value={fullName}
-          onChangeText={setFullName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Phone"
-          keyboardType="phone-pad"
-          value={phone}
-          onChangeText={setPhone}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Address"
-          value={address}
-          onChangeText={setAddress}
-        />
-      </Card>
-
-      <Card containerStyle={styles.card}>
-        <Text style={styles.sectionTitle}>Order Summary</Text>
-        <View style={styles.orderItem}>
-          <Text style={styles.itemText}>Subtotal:</Text>
-          <Text style={styles.priceText}>${calculateTotal()}</Text>
-        </View>
-        <View style={styles.orderItem}>
-          <Text style={styles.itemText}>Shipping fee:</Text>
-          <Text style={styles.priceText}>${shippingFee}</Text>
-        </View>
-        <View style={styles.orderItem}>
-          <Text style={styles.itemText}>Tax:</Text>
-          <Text style={styles.priceText}>${tax}</Text>
-        </View>
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalText}>Total:</Text>
-          <Text style={styles.priceText}>${total}</Text>
-        </View>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Voucher Code (Optional)"
-          value={voucher}
-          onChangeText={setVoucher}
-        />
-      </Card>
-
-      <Card containerStyle={styles.card}>
-        <Text style={styles.sectionTitle}>Payment Method</Text>
-        <TouchableOpacity style={styles.paymentOption}>
-          <Icon name="credit-card" type="font-awesome" size={24} color="#333" />
-          <Text style={styles.optionText}>Credit Card</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.paymentOption}>
-          <Icon name="paypal" type="font-awesome" size={24} color="#333" />
-          <Text style={styles.optionText}>PayPal</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.paymentOption}>
-          <Icon name="bank" type="font-awesome" size={24} color="#333" />
-          <Text style={styles.optionText}>Bank Transfer</Text>
-        </TouchableOpacity>
-      </Card>
-
-      <Button
-        title="Place Order"
-        onPress={handlePlaceOrder}
-        buttonStyle={styles.placeOrderButton}
-        containerStyle={styles.buttonContainer}
-      />
-    </ScrollView>
+    <FlatList
+      data={sections}
+      renderItem={({ item }) => {
+        switch (item.key) {
+          case "yourInformation":
+            return (
+              <Card containerStyle={styles.card}>
+                <Text style={styles.sectionTitle}>Your Information</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Full Name"
+                  value={fullName}
+                  onChangeText={setFullName}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Phone"
+                  keyboardType="phone-pad"
+                  value={phone}
+                  onChangeText={setPhone}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Address"
+                  value={address}
+                  onChangeText={setAddress}
+                />
+              </Card>
+            );
+          case "orderSummary":
+            return (
+              <Card containerStyle={styles.card}>
+                <Text style={styles.sectionTitle}>Order Summary</Text>
+                {cart.map((item, i) => (
+                  <OrderDetailItem key={i} item={item} />
+                ))}
+                <View style={styles.orderItem}>
+                  <Text style={styles.itemText}>Subtotal:</Text>
+                  <Text style={styles.priceItem}>${calculateTotal()}</Text>
+                </View>
+                <View style={styles.orderItem}>
+                  <Text style={styles.itemText}>Shipping fee:</Text>
+                  <Text style={styles.priceItem}>${shippingFee}</Text>
+                </View>
+                <View style={styles.orderItem}>
+                  <Text style={styles.itemText}>Tax:</Text>
+                  <Text style={styles.priceItem}>${tax}</Text>
+                </View>
+                <View style={styles.totalContainer}>
+                  <Text style={styles.totalText}>Total:</Text>
+                  <Text style={styles.priceText}>${total}</Text>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Voucher Code (Optional)"
+                  value={voucher}
+                  onChangeText={setVoucher}
+                />
+              </Card>
+            );
+          case "paymentMethod":
+            return (
+              <Card containerStyle={styles.card}>
+                <Text style={styles.sectionTitle}>Payment Method</Text>
+                <TouchableOpacity
+                  style={styles.paymentOption}
+                  onPress={() => handleSelect("Credit Card")}
+                >
+                  <Icon
+                    name={
+                      selectedPayment === "Credit Card"
+                        ? "dot-circle-o"
+                        : "circle-o"
+                    }
+                    type="font-awesome"
+                    size={24}
+                    color={
+                      selectedPayment === "Credit Card" ? "#4CAF50" : "#ccc"
+                    }
+                  />
+                  <Text style={styles.optionText}>Credit Card</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.paymentOption}
+                  onPress={() => handleSelect("Smart Banking")}
+                >
+                  <Icon
+                    name={
+                      selectedPayment === "Smart Banking"
+                        ? "dot-circle-o"
+                        : "circle-o"
+                    }
+                    type="font-awesome"
+                    size={24}
+                    color={
+                      selectedPayment === "Smart Banking" ? "#4CAF50" : "#ccc"
+                    }
+                  />
+                  <Text style={styles.optionText}>Smart Banking</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.paymentOption}
+                  onPress={() => handleSelect("Cash On Delivery")}
+                >
+                  <Icon
+                    name={
+                      selectedPayment === "Cash On Delivery"
+                        ? "dot-circle-o"
+                        : "circle-o"
+                    }
+                    type="font-awesome"
+                    size={24}
+                    color={
+                      selectedPayment === "Cash On Delivery"
+                        ? "#4CAF50"
+                        : "#ccc"
+                    }
+                  />
+                  <Text style={styles.optionText}>Cash On Delivery</Text>
+                </TouchableOpacity>
+              </Card>
+            );
+          case "placeOrderButton":
+            return (
+              <Button
+                title="Place Order"
+                onPress={handlePlaceOrder}
+                buttonStyle={styles.placeOrderButton}
+                containerStyle={styles.buttonContainer}
+              />
+            );
+          default:
+            return null;
+        }
+      }}
+      keyExtractor={(item) => item.key}
+    />
   );
 };
 
@@ -141,14 +222,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   card: {
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 15,
-    marginBottom: 20,
+    marginVertical: 20,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 20,
+    color: "#470101",
   },
   input: {
     borderWidth: 1,
@@ -166,9 +248,13 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
   },
+  priceItem: {
+    fontSize: 16,
+  },
   priceText: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "#470101",
   },
   totalContainer: {
     flexDirection: "row",
@@ -181,6 +267,7 @@ const styles = StyleSheet.create({
   totalText: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#470101",
   },
   paymentOption: {
     flexDirection: "row",
@@ -196,8 +283,9 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   buttonContainer: {
-    marginHorizontal: 20,
-    marginBottom: 30,
+    marginHorizontal: 15,
+    marginVertical: 20,
+    borderRadius: 12,
   },
 });
 

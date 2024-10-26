@@ -43,7 +43,15 @@ const TabNavigation = () => {
       <Tab.Screen
         name="Products"
         component={Products}
-        options={{ title: "Koi Fishes" }}
+        options={{
+          title: "Koi Fishes",
+          headerShown: true,
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "#470101",
+          },
+          headerTintColor: "#fff",
+        }}
       />
       <Tab.Screen
         name="Cart"
@@ -52,12 +60,25 @@ const TabNavigation = () => {
           title: "Cart",
           headerShown: true,
           tabBarBadge: cart.length,
+          headerTitleAlign: "center",
+            headerStyle: {
+              backgroundColor: "#470101",
+            },
+            headerTintColor: "#fff",
         }}
       />
       <Tab.Screen
         name="Profile"
         component={Profile}
-        options={{ title: "Profile", headerShown: true }}
+        options={{
+          title: "Profile",
+          headerShown: true,
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "#470101",
+          },
+          headerTintColor: "#fff",
+        }}
       />
     </Tab.Navigator>
   );
