@@ -16,6 +16,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { CartProvider } from "./src/contexts/CartContext";
 import Checkout from "./src/Customers/Checkout";
 import History from "./src/Customers/History";
+import Detail from "./src/screen/Detail";
+
+const Stack = createNativeStackNavigator();
 import AwardCertificate from "./src/Customers/AwardCertificate";
 import TabNavigation from "./src/navigations/TabNavigation";
 
@@ -196,6 +199,11 @@ export default function App() {
               headerStyle: { backgroundColor: "#470101" },
               headerTintColor: "#fff",
             }}
+          />
+          <MainStack.Screen
+            name="Detail"
+            component={Detail}
+            options={{ title: "Koi Detail" }}
           />
         </MainStack.Navigator>
       </NavigationContainer>

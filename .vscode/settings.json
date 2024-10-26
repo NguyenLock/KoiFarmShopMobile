@@ -1,0 +1,5 @@
+{
+    "conventionalCommits.scopes": [
+        "get Product, KoiDetail & modify koiFish"
+    ]
+}
