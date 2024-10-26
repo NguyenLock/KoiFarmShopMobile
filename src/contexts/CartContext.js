@@ -6,6 +6,7 @@ export const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     const loadCart = async () => {
@@ -26,6 +27,24 @@ export const CartProvider = ({ children }) => {
     };
     loadOrders();
   }, []);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const storedUser = await AsyncStorage.getItem("currentUser");
+      setCurrentUser(storedUser ? JSON.parse(storedUser) : null);
+    };
+    loadUser();
+  }, []);
+
+  const logout = async () => {
+    setCurrentUser(null);
+    await AsyncStorage.removeItem("currentUser");
+  };
+
+  const setUser = async (user) => {
+    setCurrentUser(user);
+    await AsyncStorage.setItem("currentUser", JSON.stringify(user));
+  };
 
   const toggleCart = async (item) => {
     let updatedCart = [...cart];
@@ -94,6 +113,9 @@ export const CartProvider = ({ children }) => {
       value={{
         cart,
         orders,
+        currentUser,
+        setUser,
+        logout,
         toggleCart,
         increaseQuantity,
         decreaseQuantity,

@@ -1,9 +1,11 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useContext } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { CartContext } from "../contexts/CartContext";
 
 export default function Profile() {
   const navigation = useNavigation();
+  const { currentUser, logout } = useContext(CartContext);
 
   const navigateToHistory = () => {
     navigation.navigate("History");
@@ -21,21 +23,56 @@ export default function Profile() {
     navigation.navigate("Register");
   };
 
+  const navigateLogout = () => {
+    logout();
+    if (currentUser.role === "customer") {
+      Alert.alert("Logout Successful", "Thank you for shopping with us!");
+    } else {
+      Alert.alert("Logout Successful", "Goodbye!");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
-      <TouchableOpacity style={styles.button} onPress={navigateToHistory}>
-        <Text style={styles.buttonText}>View Order History</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={navigateToCertificate}>
-        <Text style={styles.buttonText}>View Award Certificates</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={navigateToLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={navigateToRegister}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
+
+      {currentUser ? (
+        <>
+          <Text style={styles.title}>{currentUser.username}</Text>
+
+          {currentUser?.role === "customer" && (
+            <>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={navigateToHistory}
+              >
+                <Text style={styles.buttonText}>View Order History</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.button}
+                onPress={navigateToCertificate}
+              >
+                <Text style={styles.buttonText}>View Award Certificates</Text>
+              </TouchableOpacity>
+            </>
+          )}
+
+          <TouchableOpacity style={styles.button} onPress={navigateLogout}>
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <TouchableOpacity style={styles.button} onPress={navigateToLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button} onPress={navigateToRegister}>
+            <Text style={styles.buttonText}>Register</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </View>
   );
 }
