@@ -13,6 +13,14 @@ export default function Profile() {
     navigation.navigate("Certificate");
   };
 
+  const navigateToLogin = () => {
+    navigation.navigate("Login");
+  };
+
+  const navigateToRegister = () => {
+    navigation.navigate("Register");
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
@@ -21,6 +29,12 @@ export default function Profile() {
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={navigateToCertificate}>
         <Text style={styles.buttonText}>View Award Certificates</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={navigateToLogin}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={navigateToRegister}>
+        <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
     </View>
   );
