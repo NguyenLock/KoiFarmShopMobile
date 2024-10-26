@@ -33,49 +33,13 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (!orders || !Array.isArray(orders)) return;
-
     setOrdersCount(orders.length);
-
-    const dailyTotals = {};
-    for (let day = 1; day <= 31; day++) {
-      const date = new Date(2024, 9, day).toLocaleDateString();
-      dailyTotals[date] = 0;
-    }
-
-    orders.forEach((order) => {
-      if (order.createdAt && typeof order.total === "number") {
-        try {
-          const date = new Date(order.createdAt).toLocaleDateString();
-          if (dailyTotals.hasOwnProperty(date)) {
-            dailyTotals[date] += order.total;
-          }
-        } catch (error) {
-          console.warn("Invalid date in order", order);
-        }
-      }
-    });
-
-    const labels = Object.keys(dailyTotals);
-    const data = Object.values(dailyTotals).map((value) =>
-      isNaN(value) ? 0 : value
-    );
-
-    setOrderLabels(labels);
-    setOrderData(data);
   }, [orders]);
 
-  const chartData = {
-    labels: orderLabels,
-    datasets: [
-      {
-        data: orderData,
-        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
-        strokeWidth: 2,
-      },
-    ],
-    legend: ["Daily Order Total"],
-  };
+  const labels = orders.map((order) =>
+    new Date(order.createdAt).toLocaleDateString()
+  );
+  const data = orders.map((order) => order.total);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -116,33 +80,41 @@ export default function Dashboard() {
       </View>
       <Text style={styles.chartTitle}>Total Order Value (Monthly)</Text>
 
-      {/* {orderLabels.length > 0 && orderData.length > 0 ? (
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <LineChart
-            data={chartData}
-            width={screenWidth * 1.5} // Increase width if necessary
-            height={220}
-            yAxisLabel="$"
-            chartConfig={{
-              backgroundColor: "#e26a00",
-              backgroundGradientFrom: "#fb8c00",
-              backgroundGradientTo: "#ffa726",
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16,
-              },
-              propsForDots: {
-                r: "6",
-                strokeWidth: "2",
-                stroke: "#ffa726",
-              },
-            }}
-            style={styles.chart}
-          />
-        </ScrollView>
-      ) : null} */}
+      <LineChart
+        data={{
+          labels: labels,
+          datasets: [
+            {
+              data: data,
+            },
+          ],
+        }}
+        width={Dimensions.get("window").width}
+        height={220}
+        yAxisLabel="$"
+        chartConfig={{
+          backgroundColor: "#e26a00",
+          backgroundGradientFrom: "#000",
+          backgroundGradientTo: "#ccc",
+          decimalPlaces: 2,
+          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          style: {
+            borderRadius: 16,
+          },
+          propsForDots: {
+            r: "6",
+            strokeWidth: "2",
+            stroke: "#fff",
+          },
+        }}
+        bezier
+        style={{
+          marginVertical: 8,
+          borderRadius: 16,
+          alignItems: "center",
+        }}
+      />
 
       <Text style={styles.sectionTitle}>Recent Orders</Text>
       <View style={styles.recentOrdersContainer}>
