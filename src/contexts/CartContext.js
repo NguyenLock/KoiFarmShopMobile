@@ -7,6 +7,7 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const loadCart = async () => {
@@ -34,6 +35,15 @@ export const CartProvider = ({ children }) => {
       setCurrentUser(storedUser ? JSON.parse(storedUser) : null);
     };
     loadUser();
+  }, []);
+
+  const loadComments = async () => {
+    const storedComments = await AsyncStorage.getItem("comments");
+    setComments(storedComments ? JSON.parse(storedComments) : []);
+  };
+
+  useEffect(() => {
+    loadComments();
   }, []);
 
   const logout = async () => {
@@ -96,16 +106,13 @@ export const CartProvider = ({ children }) => {
     const updatedOrders = [...orders, order];
     setOrders(updatedOrders);
     await AsyncStorage.setItem("orders", JSON.stringify(updatedOrders));
+    clearCart();
   };
 
-  const getOrders = async () => {
-    const storedOrders = await AsyncStorage.getItem("orders");
-    setOrders(storedOrders ? JSON.parse(storedOrders) : []);
-  };
-
-  const clearOrders = async () => {
-    setOrders([]);
-    await AsyncStorage.removeItem("orders");
+  const saveComment = async (newComment) => {
+    const updatedComments = [...comments, newComment];
+    setComments(updatedComments);
+    await AsyncStorage.setItem("comments", JSON.stringify(updatedComments));
   };
 
   return (
@@ -114,6 +121,7 @@ export const CartProvider = ({ children }) => {
         cart,
         orders,
         currentUser,
+        comments,
         setUser,
         logout,
         toggleCart,
@@ -121,8 +129,7 @@ export const CartProvider = ({ children }) => {
         decreaseQuantity,
         clearCart,
         saveOrder,
-        getOrders,
-        clearOrders,
+        saveComment,
       }}
     >
       {children}

@@ -1,21 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
+  TextInput,
+  TouchableOpacity,
   StyleSheet,
   Image,
   ScrollView,
   FlatList,
+  Alert,
   Modal,
-  TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { CartContext } from "../contexts/CartContext";
 
 export default function Detail({ route }) {
   const { koi } = route.params;
+  const { currentUser, comments, saveComment } = useContext(CartContext);
+  const [userComment, setUserComment] = useState("");
+  const [userRating, setUserRating] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedRating, setSelectedRating] = useState(0);
+  const [hasCommented, setHasCommented] = useState(false);
+
+  
+  useEffect(() => {
+    const existingComment = comments.find(
+      (c) => c.productId === koi.id && c.userId === currentUser.id
+    );
+    setHasCommented(!!existingComment); 
+  }, [comments, koi.id, currentUser.id]);
+
+  const handleCommentSubmit = () => {
+    if (userComment.length === 0 || userRating === 0) {
+      Alert.alert("Please enter ratings and comments.");
+      return;
+    }
+    if (userComment.length > 40) {
+      Alert.alert("Comments must not exceed 40 characters.");
+      return;
+    }
+    if (hasCommented) {
+      Alert.alert("You Have Comment this Produce.");
+      return;
+    }
+
+    const newComment = {
+      productId: koi.id,
+      userId: currentUser.id,
+      username: currentUser.username,
+      comment: userComment,
+      rating: userRating,
+      date: new Date().toLocaleDateString(),
+    };
+
+    saveComment(newComment); 
+    setHasCommented(true); 
+    Alert.alert("Comment Successfully!");
+  };
 
   const openImageModal = (imageUri) => {
     setSelectedImage(imageUri);
@@ -34,17 +76,12 @@ export default function Detail({ route }) {
         />
       );
     }
-    return (
-      <View style={styles.ratingContainer}>
-        {stars}
-        <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
-      </View>
-    );
+    return <View style={styles.ratingContainer}>{stars}</View>;
   };
 
-  const filteredReviews = selectedRating
-    ? koi.reviews.filter((review) => review.rating === selectedRating)
-    : koi.reviews;
+  const filteredReviews = koi.reviews.concat(
+    comments.filter((comment) => comment.productId === koi.id)
+  );
 
   return (
     <ScrollView style={styles.container}>
@@ -62,86 +99,56 @@ export default function Detail({ route }) {
 
       <Text style={styles.description}>{koi.description}</Text>
 
-      <View style={styles.infoSection}>
-        <Text style={styles.sectionTitle}>Product Info</Text>
-        {Object.entries({
-          Breed: koi.breed,
-          Gender: koi.gender,
-          Age: koi.age,
-          Personality: koi.personality,
-          Size: koi.size,
-          "Feeding Amount": koi.feedingAmount,
-          "Health Status": koi.healthStatus,
-          "Award Certificate": koi.awardCertificate ? "Yes" : "No",
-        }).map(([title, text], index) => (
-          <View key={index} style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>{title}:</Text>
-            <Text style={styles.infoText}>{text}</Text>
-          </View>
-        ))}
-      </View>
-
-      <Text style={styles.sectionTitle}>Additional Images</Text>
-      <FlatList
-        horizontal
-        data={koi.additionalImages}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => openImageModal(item)}>
-            <Image source={{ uri: item }} style={styles.additionalImage} />
-          </TouchableOpacity>
-        )}
-        contentContainerStyle={styles.additionalImagesContainer}
-      />
-
-      <Text style={styles.sectionTitle}>Customer Reviews</Text>
-      <Text style={styles.reviewCount}>
-        {filteredReviews.length}{" "}
-        {filteredReviews.length === 1 ? "Review" : "Reviews"}
-      </Text>
-
-      <View style={styles.filterContainer}>
-        <Text style={styles.filterLabel}>Filter by Rating:</Text>
-        <View style={styles.filterButtons}>
-          {[0, 5, 4, 3, 2, 1].map((rating) => (
-            <TouchableOpacity
-              key={rating}
-              style={[
-                styles.filterButton,
-                selectedRating === rating && styles.selectedFilterButton,
-              ]}
-              onPress={() => setSelectedRating(rating)}
-            >
-              <Text
-                style={[
-                  styles.filterButtonText,
-                  selectedRating === rating && styles.selectedFilterButtonText,
-                ]}
-              >
-                {rating === 0
-                  ? "All"
-                  : `${rating} Star${rating > 1 ? "s" : ""}`}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-      {filteredReviews.length === 0 ? (
-        <Text style={styles.noReviewsText}>No reviews available</Text>
+      <Text style={styles.sectionTitle}>Bình luận của bạn</Text>
+      {hasCommented ? (
+        <Text style={styles.alreadyCommented}>
+          Bạn đã bình luận sản phẩm này.
+        </Text>
       ) : (
-        filteredReviews.map((review, index) => (
-          <View key={index} style={styles.reviewContainer}>
-            {renderStars(review.rating)}
-            <Text style={styles.reviewText}>{review.feedback}</Text>
-            <Text style={styles.reviewAuthor}>
-              - {review.username}, {review.feedbackDate}
-            </Text>
+        <View style={styles.commentBox}>
+          <TextInput
+            style={styles.commentInput}
+            placeholder="Write Comment Here (Exceeds 40 Symbols)..."
+            maxLength={40}
+            value={userComment}
+            onChangeText={setUserComment}
+          />
+          <View style={styles.ratingInputContainer}>
+            <Text>Đánh giá của bạn:</Text>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <TouchableOpacity key={star} onPress={() => setUserRating(star)}>
+                <Ionicons
+                  name={star <= userRating ? "star" : "star-outline"}
+                  size={20}
+                  color="gold"
+                />
+              </TouchableOpacity>
+            ))}
           </View>
-        ))
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={handleCommentSubmit}
+          >
+            <Text style={styles.submitButtonText}>Send Comment</Text>
+          </TouchableOpacity>
+        </View>
       )}
 
-      {/* Modal to view full image */}
+      <Text style={styles.sectionTitle}>Comment From Customers</Text>
+      <FlatList
+        data={filteredReviews}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.reviewContainer}>
+            {renderStars(item.rating)}
+            <Text style={styles.reviewText}>{item.comment || item.feedback}</Text>
+            <Text style={styles.reviewAuthor}>
+              - {item.username}, {item.date || item.feedbackDate}
+            </Text>
+          </View>
+        )}
+      />
+
       <Modal
         visible={modalVisible}
         transparent={true}
@@ -167,19 +174,17 @@ const styles = StyleSheet.create({
   },
   mainImage: {
     width: "100%",
-    height: 550,
+    height: 300,
     borderRadius: 10,
     marginBottom: 15,
   },
   headerContainer: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    flexShrink: 1,
   },
   price: {
     fontSize: 22,
@@ -189,125 +194,53 @@ const styles = StyleSheet.create({
   ratingContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 8,
-  },
-  ratingText: {
-    fontSize: 16,
-    color: "black",
-    marginLeft: 5,
-  },
-  breed: {
-    paddingLeft: 10,
-    paddingTop: 6,
-    fontSize: 16,
-    color: "gray",
+    marginTop: 10,
   },
   description: {
-    fontSize: 16,
-    color: "#555",
     marginVertical: 10,
   },
-  infoSection: {
+  commentBox: {
     marginVertical: 15,
+  },
+  commentInput: {
+    height: 40,
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  ratingInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  submitButton: {
+    backgroundColor: "#470101",
+    borderRadius: 10,
     padding: 10,
-    borderRadius: 10,
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
+    alignItems: "center",
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginTop: 15,
-    marginBottom: 10,
-  },
-  infoContainer: {
-    flexDirection: "row",
-    marginBottom: 8,
-  },
-  infoTitle: {
-    fontWeight: "bold",
-    marginRight: 5,
-    width: 120,
-  },
-  infoText: {
-    fontSize: 16,
-    color: "#555",
-  },
-  additionalImagesContainer: {
-    paddingHorizontal: 5,
-    paddingVertical: 10,
-  },
-  additionalImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    marginRight: 10,
-  },
-  reviewCount: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  filterContainer: {
-    marginBottom: 10,
-  },
-  filterLabel: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  filterButtons: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  filterButton: {
-    padding: 8,
-    backgroundColor: "#e4e4e4",
-    borderRadius: 10,
-    marginRight: 5,
-    marginBottom: 5,
-  },
-  selectedFilterButton: {
-    backgroundColor: "gray",
-  },
-  filterButtonText: {
-    color: "#000",
-  },
-  selectedFilterButtonText: {
+  submitButtonText: {
     color: "#fff",
-    fontWeight: "bold",
   },
-  noReviewsText: {
-    fontSize: 16,
+  alreadyCommented: {
     color: "gray",
-    textAlign: "center",
+    fontStyle: "italic",
     marginVertical: 10,
-    padding: 20,
   },
   reviewContainer: {
-    marginBottom: 15,
-    padding: 20,
+    marginBottom: 10,
+    padding: 10,
     backgroundColor: "#f0f0f0",
     borderRadius: 10,
   },
-  reviewRating: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 5,
-  },
   reviewText: {
-    fontSize: 14,
-    color: "#333",
     marginTop: 5,
   },
   reviewAuthor: {
     fontSize: 12,
     color: "gray",
-    marginTop: 5,
-    fontStyle: "italic",
   },
   modalContainer: {
     flex: 1,
@@ -318,6 +251,5 @@ const styles = StyleSheet.create({
   fullImage: {
     width: "90%",
     height: "80%",
-    borderRadius: 10,
   },
 });
