@@ -23,13 +23,12 @@ export default function Detail({ route }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [hasCommented, setHasCommented] = useState(false);
 
-  
   useEffect(() => {
     const existingComment = comments.find(
-      (c) => c.productId === koi.id && c.userId === currentUser.id
+      (c) => c.productId === koi.id && c.userId === currentUser?.id
     );
-    setHasCommented(!!existingComment); 
-  }, [comments, koi.id, currentUser.id]);
+    setHasCommented(!!existingComment);
+  }, [comments, koi.id, currentUser]);
 
   const handleCommentSubmit = () => {
     if (userComment.length === 0 || userRating === 0) {
@@ -41,7 +40,7 @@ export default function Detail({ route }) {
       return;
     }
     if (hasCommented) {
-      Alert.alert("You Have Comment this Produce.");
+      Alert.alert("You have already commented on this product.");
       return;
     }
 
@@ -54,8 +53,8 @@ export default function Detail({ route }) {
       date: new Date().toLocaleDateString(),
     };
 
-    saveComment(newComment); 
-    setHasCommented(true); 
+    saveComment(newComment);
+    setHasCommented(true);
     Alert.alert("Comment Successfully!");
   };
 
@@ -100,7 +99,11 @@ export default function Detail({ route }) {
       <Text style={styles.description}>{koi.description}</Text>
 
       <Text style={styles.sectionTitle}>Bình luận của bạn</Text>
-      {hasCommented ? (
+      {!currentUser ? (
+        <Text style={styles.loginPrompt}>
+          Please log in to leave a comment.
+        </Text>
+      ) : hasCommented ? (
         <Text style={styles.alreadyCommented}>
           Bạn đã bình luận sản phẩm này.
         </Text>
@@ -141,7 +144,9 @@ export default function Detail({ route }) {
         renderItem={({ item }) => (
           <View style={styles.reviewContainer}>
             {renderStars(item.rating)}
-            <Text style={styles.reviewText}>{item.comment || item.feedback}</Text>
+            <Text style={styles.reviewText}>
+              {item.comment || item.feedback}
+            </Text>
             <Text style={styles.reviewAuthor}>
               - {item.username}, {item.date || item.feedbackDate}
             </Text>
@@ -196,6 +201,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
   },
+  breed: {
+    marginLeft: 10,
+  },
   description: {
     marginVertical: 10,
   },
@@ -223,6 +231,12 @@ const styles = StyleSheet.create({
   },
   submitButtonText: {
     color: "#fff",
+  },
+  loginPrompt: {
+    fontStyle: "italic",
+    color: "red",
+    textAlign: "center",
+    marginVertical: 10,
   },
   alreadyCommented: {
     color: "gray",
