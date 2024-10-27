@@ -4,5 +4,5 @@ WelCome To KoiFarmShopMobile Responsiblity
 - BE we Using mockApi to make the Database 
 ## Here Some Picture About the Project 
 <p align="center">
-  <img src="[https://github.com/your-username/your-repo/raw/main/assets/koi-fish.png](https://raw.githubusercontent.com/NguyenLock/KoiFarmShopMobile/refs/heads/master/assets/login.jpg?token=GHSAT0AAAAAACXU5UMORLDYP235XQBUMTYQZY6OQRQ)" width="300" alt="Koi Fish">
+  <img src="https://github.com/NguyenLock/KoiFarmShopMobile/blob/master/assets/login.jpg" width="300" alt="Koi Fish">
 </p>
