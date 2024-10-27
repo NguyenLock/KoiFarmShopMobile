@@ -7,7 +7,6 @@ import {
   StyleSheet,
   Image,
   ScrollView,
-  FlatList,
   Alert,
   Modal,
 } from "react-native";
@@ -24,10 +23,12 @@ export default function Detail({ route }) {
   const [hasCommented, setHasCommented] = useState(false);
 
   useEffect(() => {
-    const existingComment = comments.find(
-      (c) => c.productId === koi.id && c.userId === currentUser?.id
-    );
-    setHasCommented(!!existingComment);
+    if (currentUser) {
+      const existingComment = comments.find(
+        (c) => c.productId === koi.id && c.userId === currentUser.id
+      );
+      setHasCommented(!!existingComment);
+    }
   }, [comments, koi.id, currentUser]);
 
   const handleCommentSubmit = () => {
@@ -55,7 +56,7 @@ export default function Detail({ route }) {
 
     saveComment(newComment);
     setHasCommented(true);
-    Alert.alert("Comment Successfully!");
+    Alert.alert("Comment submitted successfully!");
   };
 
   const openImageModal = (imageUri) => {
@@ -64,21 +65,21 @@ export default function Detail({ route }) {
   };
 
   const renderStars = (rating) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <Ionicons
-          key={i}
-          name={i <= rating ? "star" : "star-outline"}
-          size={16}
-          color="gold"
-        />
-      );
-    }
-    return <View style={styles.ratingContainer}>{stars}</View>;
+    return (
+      <View style={styles.ratingContainer}>
+        {[...Array(5)].map((_, i) => (
+          <Ionicons
+            key={i}
+            name={i < rating ? "star" : "star-outline"}
+            size={16}
+            color="gold"
+          />
+        ))}
+      </View>
+    );
   };
 
-  const filteredReviews = koi.reviews.concat(
+  const combinedReviews = koi.reviews.concat(
     comments.filter((comment) => comment.productId === koi.id)
   );
 
@@ -98,26 +99,52 @@ export default function Detail({ route }) {
 
       <Text style={styles.description}>{koi.description}</Text>
 
-      <Text style={styles.sectionTitle}>Bình luận của bạn</Text>
+      <View style={styles.infoSection}>
+        <Text style={styles.sectionTitle}>Product Info</Text>
+        {Object.entries({
+          Breed: koi.breed,
+          Gender: koi.gender,
+          Age: koi.age,
+          Personality: koi.personality,
+          Size: koi.size,
+          "Feeding Amount": koi.feedingAmount,
+          "Health Status": koi.healthStatus,
+          "Award Certificate": koi.awardCertificate ? "Yes" : "No",
+        }).map(([title, text], index) => (
+          <View key={index} style={styles.infoContainer}>
+            <Text style={styles.infoTitle}>{title}:</Text>
+            <Text style={styles.infoText}>{text}</Text>
+          </View>
+        ))}
+      </View>
+
+      <Text style={styles.sectionTitle}>Additional Images</Text>
+      <ScrollView horizontal style={styles.additionalImagesContainer}>
+        {koi.additionalImages.map((imageUri, index) => (
+          <TouchableOpacity key={index} onPress={() => openImageModal(imageUri)}>
+            <Image source={{ uri: imageUri }} style={styles.additionalImage} />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      <Text style={styles.sectionTitle}>Your Comments</Text>
       {!currentUser ? (
-        <Text style={styles.loginPrompt}>
-          Please log in to leave a comment.
-        </Text>
+        <Text style={styles.loginPrompt}>Please log in to leave a comment.</Text>
       ) : hasCommented ? (
         <Text style={styles.alreadyCommented}>
-          Bạn đã bình luận sản phẩm này.
+          You have already commented on this product.
         </Text>
       ) : (
         <View style={styles.commentBox}>
           <TextInput
             style={styles.commentInput}
-            placeholder="Write Comment Here (Exceeds 40 Symbols)..."
+            placeholder="Write Comment Here (Max 40 Characters)..."
             maxLength={40}
             value={userComment}
             onChangeText={setUserComment}
           />
           <View style={styles.ratingInputContainer}>
-            <Text>Đánh giá của bạn:</Text>
+            <Text>Your Rating:</Text>
             {[1, 2, 3, 4, 5].map((star) => (
               <TouchableOpacity key={star} onPress={() => setUserRating(star)}>
                 <Ionicons
@@ -137,22 +164,24 @@ export default function Detail({ route }) {
         </View>
       )}
 
-      <Text style={styles.sectionTitle}>Comment From Customers</Text>
-      <FlatList
-        data={filteredReviews}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.reviewContainer}>
-            {renderStars(item.rating)}
+      <Text style={styles.sectionTitle}>Comments From Customers</Text>
+      {combinedReviews.length === 0 ? (
+        <Text style={styles.noReviewsText}>
+          Become the First Customer Reviews
+        </Text>
+      ) : (
+        combinedReviews.map((review, index) => (
+          <View key={index} style={styles.reviewContainer}>
+            {renderStars(review.rating)}
             <Text style={styles.reviewText}>
-              {item.comment || item.feedback}
+              {review.comment || review.feedback}
             </Text>
             <Text style={styles.reviewAuthor}>
-              - {item.username}, {item.date || item.feedbackDate}
+              - {review.username}, {review.date || review.feedbackDate}
             </Text>
           </View>
-        )}
-      />
+        ))
+      )}
 
       <Modal
         visible={modalVisible}
@@ -201,11 +230,47 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
   },
-  breed: {
-    marginLeft: 10,
-  },
   description: {
     marginVertical: 10,
+  },
+  infoSection: {
+    marginVertical: 15,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  infoContainer: {
+    flexDirection: "row",
+    marginBottom: 8,
+  },
+  infoTitle: {
+    fontWeight: "bold",
+    marginRight: 5,
+    width: 120,
+  },
+  infoText: {
+    fontSize: 16,
+    color: "#555",
+  },
+  additionalImagesContainer: {
+    marginVertical: 10,
+  },
+  additionalImage: {
+    width: 100,
+    height: 100,
+    marginRight: 10,
+    borderRadius: 10,
   },
   commentBox: {
     marginVertical: 15,
@@ -218,43 +283,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
   },
-  ratingInputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
   submitButton: {
     backgroundColor: "#470101",
     borderRadius: 10,
     padding: 10,
     alignItems: "center",
   },
-  submitButtonText: {
+  submitButtonText:{
     color: "#fff",
+    fontWeight:'bold'
   },
-  loginPrompt: {
+  ratingInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  noReviewsText: {
     fontStyle: "italic",
-    color: "red",
     textAlign: "center",
-    marginVertical: 10,
-  },
-  alreadyCommented: {
     color: "gray",
-    fontStyle: "italic",
     marginVertical: 10,
+    marginBottom:30
   },
   reviewContainer: {
-    marginBottom: 10,
     padding: 10,
     backgroundColor: "#f0f0f0",
     borderRadius: 10,
-  },
-  reviewText: {
-    marginTop: 5,
-  },
-  reviewAuthor: {
-    fontSize: 12,
-    color: "gray",
+    marginBottom: 10,
   },
   modalContainer: {
     flex: 1,
