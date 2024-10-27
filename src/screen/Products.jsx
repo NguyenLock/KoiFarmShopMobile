@@ -31,7 +31,7 @@ export default function Products({ navigation }) {
     const data = await response.json();
     setFishes(data);
     setFilteredFishes(data);
-    setBreeds([...new Set(data.map((item) => item.breed))]); // Extract unique breeds
+    setBreeds([...new Set(data.map((item) => item.breed))]);
     setLoading(false);
   };
 
@@ -60,6 +60,10 @@ export default function Products({ navigation }) {
     setIsVisible(!isVisible);
   };
 
+  const navigateToCart = () => {
+    navigation.navigate("Cart");
+  };
+
   useEffect(() => {
     getKoiFishes();
   }, []);
@@ -68,10 +72,7 @@ export default function Products({ navigation }) {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Koi Collection</Text>
-        <TouchableOpacity
-          style={styles.cartIcon}
-          onPress={() => navigation.navigate("Cart")}
-        >
+        <TouchableOpacity style={styles.cartIcon} onPress={navigateToCart}>
           <Ionicons name="cart-outline" size={24} color="black" />
           {cart.length > 0 && (
             <View style={styles.cartBadge}>
