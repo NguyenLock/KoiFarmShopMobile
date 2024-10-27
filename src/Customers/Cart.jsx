@@ -58,7 +58,10 @@ export default function Cart({ navigation }) {
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
-              <TouchableOpacity style={styles.fishContainer}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Detail", { koi: item })}
+                style={styles.fishContainer}
+              >
                 <View style={styles.fishCard}>
                   <View style={styles.imageWrapper}>
                     <Image source={{ uri: item.image }} style={styles.image} />
