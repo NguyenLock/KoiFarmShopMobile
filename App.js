@@ -17,6 +17,7 @@ import Aboutus from "./src/screen/Aboutus";
 import ContactUs from "./src/screen/ContactUs";
 import News from "./src/screen/News";
 import Cart from "./src/Customers/Cart";
+import DetailNews from "./src/screen/DetailNews";
 
 const Stack = createNativeStackNavigator();
 
@@ -188,6 +189,17 @@ export default function App() {
             component={News}
             options={{
               title: "News",
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: { backgroundColor: "#470101" },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="DetailNews"
+            component={DetailNews}
+            options={{
+              title: "News Detail",
               headerShown: true,
               headerTitleAlign: "center",
               headerStyle: { backgroundColor: "#470101" },
