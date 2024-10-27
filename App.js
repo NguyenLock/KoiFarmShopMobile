@@ -16,6 +16,7 @@ import Register from "./src/screen/Register";
 import Aboutus from "./src/screen/Aboutus";
 import ContactUs from "./src/screen/ContactUs";
 import News from "./src/screen/News";
+import Cart from "./src/Customers/Cart";
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,17 @@ export default function App() {
             component={Register}
             options={{
               title: "Register",
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: { backgroundColor: "#470101" },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="Cart"
+            component={Cart}
+            options={{
+              title: "Cart",
               headerShown: true,
               headerTitleAlign: "center",
               headerStyle: { backgroundColor: "#470101" },
@@ -149,7 +161,7 @@ export default function App() {
               headerTintColor: "#fff",
             }}
           />
-           <Stack.Screen
+          <Stack.Screen
             name="Aboutus"
             component={Aboutus}
             options={{
