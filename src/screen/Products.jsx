@@ -37,9 +37,15 @@ export default function Products({ navigation }) {
 
   const handleSearch = () => {
     if (search) {
-      const filteredData = fishes.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase())
-      );
+      const filteredData = fishes.filter((item) => {
+        const searchTerm = search.toLowerCase();
+        return (
+          item.name.toLowerCase().includes(searchTerm) ||
+          item.breed.toLowerCase().includes(searchTerm) ||
+          item.age.toString().includes(searchTerm) ||
+          item.gender.toLowerCase().includes(searchTerm)
+        );
+      });
       setFilteredFishes(filteredData);
     } else {
       setFilteredFishes(fishes);
@@ -164,6 +170,15 @@ export default function Products({ navigation }) {
         </ScrollView>
       )}
 
+      {search && (
+        <View style={styles.searchResultsContainer}>
+          <Text style={styles.searchResultsText}>
+            {filteredFishes.length} result{filteredFishes.length !== 1 && "s"}{" "}
+            found
+          </Text>
+        </View>
+      )}
+
       <View style={styles.listContainer}>
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
@@ -181,12 +196,7 @@ export default function Products({ navigation }) {
               <TouchableOpacity
                 onPress={() => navigation.navigate("Detail", { koi: item })}
               >
-                <KoiFish
-                  item={item}
-                  onToggleAddToCart={() => addToCart(item)}
-                  isAddToCart={cart.some((c) => c.id === item.id)}
-                  iconName="add-outline" // Pass the plus icon name as a prop
-                />
+                <KoiFish item={item} onAddToCart={toggleCart} />
               </TouchableOpacity>
             )}
           />
@@ -201,12 +211,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f9f9f9",
     padding: 10,
-    marginVertical: 10,
   },
   containerNothing: {
     flex: 1,
-    backgroundColor: "#f9f9f9",
-    padding: 10,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -221,17 +228,20 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "#333",
   },
   cartIcon: {
     position: "relative",
+    padding: 10,
   },
   cartBadge: {
     position: "absolute",
-    top: -5,
-    right: -5,
+    top: -3,
+    right: -2,
     backgroundColor: "red",
     borderRadius: 10,
-    padding: 3,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
   },
   cartBadgeText: {
     color: "#fff",
@@ -264,7 +274,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
-    backgroundColor: "#3B7B7A",
+    backgroundColor: "#470101",
     borderRadius: 25,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -274,6 +284,7 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     marginRight: 5,
+    color: "#fff",
   },
   filterButtonText: {
     color: "#fff",
@@ -303,8 +314,16 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
+  searchResultsContainer: {
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  searchResultsText: {
+    fontSize: 16,
+    color: "#333",
+  },
   listContainer: {
-    flex: 15,
+    flex: 1,
     marginTop: 15,
     paddingBottom: 20,
   },

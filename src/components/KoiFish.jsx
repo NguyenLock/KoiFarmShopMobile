@@ -1,26 +1,37 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useContext } from "react";
+import { CartContext } from "../contexts/CartContext";
 
-export default function KoiFish({ item, onToggleAddToCart, isAddToCart }) {
+export default function KoiFish({ item }) {
+  const { toggleCart } = useContext(CartContext);
+
+  const handleAddToCart = () => {
+    toggleCart(item);
+    Alert.alert("Cart Updated", `${item.name} added to cart.`);
+  };
+
   return (
     <View style={styles.container}>
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.infoContainer}>
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.price}>${item.price}</Text>
+        <TouchableOpacity
+          onPress={handleAddToCart}
+          style={styles.addToCartButton}
+        >
+          <Ionicons name="cart-outline" size={20} color="white" />
+          <Text style={styles.addToCartText}>Add to Cart</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        onPress={onToggleAddToCart}
-        style={styles.addToCartButton}
-      >
-        <Ionicons
-          name={isAddToCart ? "checkmark-outline" : "cart-outline"}
-          color={isAddToCart ? "white" : "white"}
-        />
-        <Text style={styles.addToCartText}>
-          {isAddToCart ? "Added" : "Add to Cart"}
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -52,21 +63,21 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: "bold",
+    color: "#333",
   },
   price: {
     fontSize: 18,
-    color: "#3B7B7A",
+    color: "#470101",
     marginTop: 5,
   },
   addToCartButton: {
-    justifyContent: "center",
+    flexDirection: "row",
     alignItems: "center",
-    width: 65,
-    backgroundColor: "#3B7B7A",
+    justifyContent: "center",
+    backgroundColor: "#470101",
     borderRadius: 10,
     paddingVertical: 10,
-    marginLeft: 10,
-    elevation: 3,
+    marginTop: 10,
   },
   addToCartText: {
     marginLeft: 5,

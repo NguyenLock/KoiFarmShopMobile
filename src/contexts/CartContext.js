@@ -76,11 +76,12 @@ export const CartProvider = ({ children }) => {
     let updatedCart = [...cart];
     const existingItemIndex = updatedCart.findIndex((c) => c.id === item.id);
 
-    if (existingItemIndex > -1) {
-      updatedCart.splice(existingItemIndex, 1);
-    } else {
+    if (existingItemIndex === -1) {
       updatedCart.push({ ...item, quantity: 1 });
+    } else {
+      updatedCart[existingItemIndex].quantity += 1;
     }
+
     setCart(updatedCart);
     await AsyncStorage.setItem(
       "cart" + currentUser?.id,
