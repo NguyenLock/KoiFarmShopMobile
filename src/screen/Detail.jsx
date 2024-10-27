@@ -22,6 +22,7 @@ export default function Detail({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [hasCommented, setHasCommented] = useState(false);
+  const [selectedRatingFilter, setSelectedRatingFilter] = useState(0);
 
   useEffect(() => {
     if (currentUser) {
@@ -105,6 +106,10 @@ export default function Detail({ route, navigation }) {
     toggleCart(koi);
     navigation.navigate("Checkout");
   };
+
+  const filteredReviews = selectedRatingFilter
+    ? combinedReviews.filter((review) => review.rating === selectedRatingFilter)
+    : combinedReviews;
 
   return (
     <View style={styles.container}>
@@ -201,13 +206,39 @@ export default function Detail({ route, navigation }) {
           </View>
         )}
 
+        <Text style={styles.sectionTitle}>View by rating</Text>
+        <View style={styles.filterButtonsContainer}>
+          {[0, 5, 4, 3, 2, 1].map((rating) => (
+            <TouchableOpacity
+              key={rating}
+              style={[
+                styles.filterButton,
+                selectedRatingFilter === rating && styles.selectedFilterButton,
+              ]}
+              onPress={() => setSelectedRatingFilter(rating)}
+            >
+              <Text
+                style={[
+                  styles.filterButtonText,
+                  selectedRatingFilter === rating &&
+                    styles.selectedFilterButtonText,
+                ]}
+              >
+                {rating === 0
+                  ? "All"
+                  : `${rating} Star${rating > 1 ? "s" : ""}`}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
         <Text style={styles.sectionTitle}>Reviews</Text>
-        {combinedReviews.length === 0 ? (
+        {filteredReviews.length === 0 ? (
           <Text style={styles.noReviewsText}>
-            Become the First Customer Reviews
+            No reviews available for this rating.
           </Text>
         ) : (
-          combinedReviews.map((review, index) => (
+          filteredReviews.map((review, index) => (
             <View key={index} style={styles.reviewContainer}>
               {renderStars(review.rating)}
               <Text style={styles.reviewText}>
@@ -357,6 +388,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+  },
+  filterButtonsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginBottom: 10,
+  },
+  filterButton: {
+    padding: 8,
+    backgroundColor: "#e4e4e4",
+    borderRadius: 10,
+    marginRight: 5,
+    marginBottom: 5,
+  },
+  selectedFilterButton: {
+    backgroundColor: "gray",
+  },
+  filterButtonText: {
+    color: "#000",
+  },
+  selectedFilterButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
   noReviewsText: {
     fontStyle: "italic",
