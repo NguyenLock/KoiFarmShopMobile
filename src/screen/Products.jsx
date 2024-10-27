@@ -173,7 +173,6 @@ export default function Products({ navigation }) {
                   item={item}
                   onToggleAddToCart={() => toggleCart(item)}
                   isAddToCart={cart.some((c) => c.id === item.id)}
-                  iconName="add-outline" // Pass the plus icon name as a prop
                 />
               </TouchableOpacity>
             )}
@@ -189,12 +188,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f9f9f9",
     padding: 10,
-    marginVertical: 10,
   },
   containerNothing: {
     flex: 1,
-    backgroundColor: "#f9f9f9",
-    padding: 10,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -209,17 +205,20 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "#333",
   },
   cartIcon: {
     position: "relative",
+    padding: 10,
   },
   cartBadge: {
     position: "absolute",
-    top: -5,
-    right: -5,
+    top: -3,
+    right: -2,
     backgroundColor: "red",
     borderRadius: 10,
-    padding: 3,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
   },
   cartBadgeText: {
     color: "#fff",
@@ -252,7 +251,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
-    backgroundColor: "#3B7B7A",
+    backgroundColor: "#470101",
     borderRadius: 25,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -262,6 +261,7 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     marginRight: 5,
+    color: "#fff",
   },
   filterButtonText: {
     color: "#fff",
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   listContainer: {
-    flex: 15,
+    flex: 1,
     marginTop: 15,
     paddingBottom: 20,
   },

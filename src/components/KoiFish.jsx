@@ -8,19 +8,23 @@ export default function KoiFish({ item, onToggleAddToCart, isAddToCart }) {
       <View style={styles.infoContainer}>
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.price}>${item.price}</Text>
+        <TouchableOpacity
+          onPress={onToggleAddToCart}
+          style={[
+            styles.addToCartButton,
+            isAddToCart && styles.addedToCartButton,
+          ]}
+        >
+          <Ionicons
+            name={isAddToCart ? "checkmark-outline" : "cart-outline"}
+            size={20}
+            color="white"
+          />
+          <Text style={styles.addToCartText}>
+            {isAddToCart ? "Added" : "Add to Cart"}
+          </Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        onPress={onToggleAddToCart}
-        style={styles.addToCartButton}
-      >
-        <Ionicons
-          name={isAddToCart ? "checkmark-outline" : "cart-outline"}
-          color={isAddToCart ? "white" : "white"}
-        />
-        <Text style={styles.addToCartText}>
-          {isAddToCart ? "Added" : "Add to Cart"}
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -52,21 +56,24 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: "bold",
+    color: "#333",
   },
   price: {
     fontSize: 18,
-    color: "#3B7B7A",
+    color: "#470101",
     marginTop: 5,
   },
   addToCartButton: {
-    justifyContent: "center",
+    flexDirection: "row",
     alignItems: "center",
-    width: 65,
-    backgroundColor: "#3B7B7A",
+    justifyContent: "center",
+    backgroundColor: "#470101",
     borderRadius: 10,
     paddingVertical: 10,
-    marginLeft: 10,
-    elevation: 3,
+    marginTop: 10,
+  },
+  addedToCartButton: {
+    backgroundColor: "green",
   },
   addToCartText: {
     marginLeft: 5,
