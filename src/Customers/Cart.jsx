@@ -15,8 +15,14 @@ import { Ionicons } from "@expo/vector-icons";
 import KoiFish from "../components/KoiFish";
 
 export default function Cart({ navigation }) {
-  const { cart, toggleCart, clearCart, increaseQuantity, decreaseQuantity } =
-    useContext(CartContext);
+  const {
+    cart,
+    toggleCart,
+    clearCart,
+    increaseQuantity,
+    decreaseQuantity,
+    currentUser,
+  } = useContext(CartContext);
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleClearCart = () => {
@@ -29,6 +35,14 @@ export default function Cart({ navigation }) {
     return cart
       .reduce((total, item) => total + item.price * item.quantity, 0)
       .toFixed(2);
+  };
+
+  const navigateToCheckout = () => {
+    if (!currentUser) {
+      navigation.navigate("Login");
+      return;
+    }
+    navigation.navigate("Checkout");
   };
 
   return (
@@ -90,7 +104,7 @@ export default function Cart({ navigation }) {
             <Text style={styles.totalText}>Total: ${calculateTotal()}</Text>
             <TouchableOpacity
               style={styles.checkoutButton}
-              onPress={() => navigation.navigate("Checkout")}
+              onPress={navigateToCheckout}
             >
               <Text style={styles.checkoutText}>Go to Checkout</Text>
             </TouchableOpacity>
