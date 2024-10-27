@@ -33,13 +33,14 @@ const Checkout = () => {
     setSelectedPayment(option);
   };
 
-  const { cart, clearCart, saveOrder } = useContext(CartContext);
+  const { cart, clearCart, saveOrder, currentUser } = useContext(CartContext);
 
   const handlePlaceOrder = async () => {
     if (!fullName || !phone || !address) {
       Alert.alert("Error", "Please fill out all required fields.");
     } else {
       const orderDetail = {
+        userId: currentUser.id,
         fullName,
         phone,
         address,
