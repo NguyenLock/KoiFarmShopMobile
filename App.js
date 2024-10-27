@@ -13,6 +13,9 @@ import KoiManager from "./src/Admin/KoiManager";
 import OrderManager from "./src/Admin/OrderManager";
 import Login from "./src/screen/Login";
 import Register from "./src/screen/Register";
+import Aboutus from "./src/screen/Aboutus";
+import ContactUs from "./src/screen/ContactUs";
+import News from "./src/screen/News";
 
 const Stack = createNativeStackNavigator();
 
@@ -143,6 +146,39 @@ export default function App() {
               headerStyle: {
                 backgroundColor: "#470101",
               },
+              headerTintColor: "#fff",
+            }}
+          />
+           <Stack.Screen
+            name="Aboutus"
+            component={Aboutus}
+            options={{
+              title: "AboutUs",
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: { backgroundColor: "#470101" },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="ContactUs"
+            component={ContactUs}
+            options={{
+              title: "Contact Us",
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: { backgroundColor: "#470101" },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="News"
+            component={News}
+            options={{
+              title: "News",
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: { backgroundColor: "#470101" },
               headerTintColor: "#fff",
             }}
           />

@@ -1,16 +1,10 @@
 // Header.js
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function Header({ drawerRef }) {
   return (
     <View style={styles.header}>
-      <TouchableOpacity 
-        style={styles.menuButton}
-        onPress={() => drawerRef.current.openDrawer()}>
-        <Ionicons name="menu" size={30} color="white" />
-      </TouchableOpacity>
       <View style={styles.logoContainer}>
         <Image 
           source={require('../../assets/logo-ca-koi.png')} 

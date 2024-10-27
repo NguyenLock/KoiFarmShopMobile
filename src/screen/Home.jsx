@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // Import navigation hook
 
 const windowWidth = Dimensions.get('window').width;
 const ASPECT_RATIO = 16 / 9;
@@ -23,8 +24,8 @@ const images = [
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
+  const navigation = useNavigation(); // Initialize navigation
 
- 
   useEffect(() => {
     const interval = setInterval(() => {
       handleNext(); 
@@ -94,6 +95,31 @@ export default function Home() {
           <Text style={styles.arrowText}>{'>'}</Text>
         </TouchableOpacity>
       </View>
+      
+      {/* Navigation Buttons Section */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate('Aboutus')}
+        >
+          <Text style={styles.navButtonText}>About Us</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate('ContactUs')}
+        >
+          <Text style={styles.navButtonText}>Contact Us</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate('News')}
+        >
+          <Text style={styles.navButtonText}>News</Text>
+        </TouchableOpacity>
+      </View>
+
     </ScrollView>
   );
 }
@@ -129,6 +155,21 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginBottom: 10,
     textAlign: 'justify',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 20,
+  },
+  navButton: {
+    backgroundColor: '#470101',
+    padding: 15,
+    borderRadius: 8,
+  },
+  navButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   carouselContainer: {
     flexDirection: 'row',
