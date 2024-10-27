@@ -1,8 +1,17 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function OrderDetailItem({ item }) {
+  const navigate = useNavigation();
+
   return (
-    <View key={item.id} style={styles.fishContainer}>
+    <TouchableOpacity
+      onPress={() => {
+        navigate.navigate("Detail", { koi: item });
+      }}
+      key={item.id}
+      style={styles.fishContainer}
+    >
       <View style={styles.fishCard}>
         <View style={styles.imageWrapper}>
           <Image source={{ uri: item.image }} style={styles.image} />
@@ -17,7 +26,7 @@ export default function OrderDetailItem({ item }) {
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

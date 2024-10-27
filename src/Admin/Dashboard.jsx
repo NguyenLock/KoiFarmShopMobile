@@ -33,13 +33,47 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const response = await fetch(
+          "https://6715cc1b33bc2bfe40bb27f5.mockapi.io/users"
+        );
+        const data = await response.json();
+        const filterData = data.filter((item) => item.role === "customer");
+        setCustomersCount(filterData.length);
+      } catch (error) {
+        console.error("Error fetching customers:", error);
+      }
+    };
+
+    fetchCustomers();
+  }, []);
+
+  useEffect(() => {
     setOrdersCount(orders.length);
   }, [orders]);
 
-  const labels = orders.map((order) =>
-    new Date(order.createdAt).toLocaleDateString()
-  );
-  const data = orders.map((order) => order.total);
+  const groupedOrders = orders.reduce((acc, order) => {
+    const date = new Date(order.createdAt).toLocaleDateString();
+    const total = Number(order.total);
+
+    if (isNaN(total)) {
+      console.error("Invalid total:", total);
+      return acc;
+    }
+
+    if (!acc[date]) {
+      acc[date] = { total: 0 };
+    }
+    acc[date].total += total;
+
+    return acc;
+  }, {});
+
+  const labels = Object.keys(groupedOrders);
+  const data = Object.values(groupedOrders)
+    .map((order) => order.total)
+    .filter((value) => typeof value === "number" && !isNaN(value));
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -89,8 +123,8 @@ export default function Dashboard() {
             },
           ],
         }}
-        width={Dimensions.get("window").width}
-        height={220}
+        width={Dimensions.get("window").width * 0.9}
+        height={400}
         yAxisLabel="$"
         chartConfig={{
           backgroundColor: "#e26a00",
@@ -110,8 +144,8 @@ export default function Dashboard() {
         }}
         bezier
         style={{
-          marginVertical: 8,
-          borderRadius: 16,
+          marginBottom: 40,
+          borderRadius: 12,
           alignItems: "center",
         }}
       />
@@ -191,12 +225,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "#470101",
-    marginVertical: 20,
+    marginTop: 20,
+    marginBottom: 40,
     textAlign: "center",
-  },
-  chart: {
-    borderRadius: 10,
-    marginBottom: 30,
   },
   recentOrdersContainer: {
     marginVertical: 10,
@@ -205,6 +236,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
+    marginBottom: 20,
   },
   recentOrderItem: {
     backgroundColor: "#FFF",
