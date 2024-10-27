@@ -1,7 +1,23 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useContext } from "react";
+import { CartContext } from "../contexts/CartContext";
 
-export default function KoiFish({ item, onToggleAddToCart, isAddToCart }) {
+export default function KoiFish({ item }) {
+  const { toggleCart } = useContext(CartContext);
+
+  const handleAddToCart = () => {
+    toggleCart(item);
+    Alert.alert("Cart Updated", `${item.name} added to cart.`);
+  };
+
   return (
     <View style={styles.container}>
       <Image source={{ uri: item.image }} style={styles.image} />
@@ -9,20 +25,11 @@ export default function KoiFish({ item, onToggleAddToCart, isAddToCart }) {
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.price}>${item.price}</Text>
         <TouchableOpacity
-          onPress={onToggleAddToCart}
-          style={[
-            styles.addToCartButton,
-            isAddToCart && styles.addedToCartButton,
-          ]}
+          onPress={handleAddToCart}
+          style={styles.addToCartButton}
         >
-          <Ionicons
-            name={isAddToCart ? "checkmark-outline" : "cart-outline"}
-            size={20}
-            color="white"
-          />
-          <Text style={styles.addToCartText}>
-            {isAddToCart ? "Added" : "Add to Cart"}
-          </Text>
+          <Ionicons name="cart-outline" size={20} color="white" />
+          <Text style={styles.addToCartText}>Add to Cart</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -71,9 +78,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 10,
     marginTop: 10,
-  },
-  addedToCartButton: {
-    backgroundColor: "green",
   },
   addToCartText: {
     marginLeft: 5,

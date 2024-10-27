@@ -37,9 +37,15 @@ export default function Products({ navigation }) {
 
   const handleSearch = () => {
     if (search) {
-      const filteredData = fishes.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase())
-      );
+      const filteredData = fishes.filter((item) => {
+        const searchTerm = search.toLowerCase();
+        return (
+          item.name.toLowerCase().includes(searchTerm) ||
+          item.breed.toLowerCase().includes(searchTerm) ||
+          item.age.toString().includes(searchTerm) ||
+          item.gender.toLowerCase().includes(searchTerm)
+        );
+      });
       setFilteredFishes(filteredData);
     } else {
       setFilteredFishes(fishes);
@@ -152,6 +158,15 @@ export default function Products({ navigation }) {
         </ScrollView>
       )}
 
+      {search && (
+        <View style={styles.searchResultsContainer}>
+          <Text style={styles.searchResultsText}>
+            {filteredFishes.length} result{filteredFishes.length !== 1 && "s"}{" "}
+            found
+          </Text>
+        </View>
+      )}
+
       <View style={styles.listContainer}>
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
@@ -169,11 +184,7 @@ export default function Products({ navigation }) {
               <TouchableOpacity
                 onPress={() => navigation.navigate("Detail", { koi: item })}
               >
-                <KoiFish
-                  item={item}
-                  onToggleAddToCart={() => toggleCart(item)}
-                  isAddToCart={cart.some((c) => c.id === item.id)}
-                />
+                <KoiFish item={item} onAddToCart={toggleCart} />
               </TouchableOpacity>
             )}
           />
@@ -290,6 +301,14 @@ const styles = StyleSheet.create({
   selectedBreedButtonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  searchResultsContainer: {
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  searchResultsText: {
+    fontSize: 16,
+    color: "#333",
   },
   listContainer: {
     flex: 1,
