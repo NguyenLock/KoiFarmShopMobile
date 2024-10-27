@@ -4,15 +4,15 @@ import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Card } from "react-native-elements";
 
 export default function AwardCertificate() {
-  const { orders } = useContext(CartContext);
+  const { personalOrders } = useContext(CartContext);
   const [filterOrders, setFilterOrders] = useState([]);
 
   useEffect(() => {
-    const filteredOrders = orders.filter(
+    const filteredOrders = personalOrders.filter(
       (order) => order.items.filter((item) => item.awardCertificate).length > 0
     );
     setFilterOrders(filteredOrders);
-  }, [orders]);
+  }, [personalOrders]);
 
   return (
     <ScrollView style={styles.container}>

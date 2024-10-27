@@ -21,7 +21,7 @@ export default function Products({ navigation }) {
   const [search, setSearch] = useState("");
   const [selectedBreed, setSelectedBreed] = useState("");
   const [isVisible, setIsVisible] = useState(false);
-  const { cart, toggleCart } = useContext(CartContext);
+  const { cart, toggleCart, currentUser } = useContext(CartContext);
 
   const getKoiFishes = async () => {
     setLoading(true);
@@ -67,7 +67,19 @@ export default function Products({ navigation }) {
   };
 
   const navigateToCart = () => {
+    if (!currentUser) {
+      navigation.navigate("Login");
+      return;
+    }
     navigation.navigate("Cart");
+  };
+
+  const addToCart = (item) => {
+    if (!currentUser) {
+      navigation.navigate("Login");
+      return;
+    }
+    toggleCart(item);
   };
 
   useEffect(() => {

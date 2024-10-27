@@ -1,30 +1,23 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import {
-  View,
   Text,
   ScrollView,
   StyleSheet,
-  Image,
-  TouchableOpacity,
 } from "react-native";
-import { Button, Card } from "react-native-elements";
 import { CartContext } from "../contexts/CartContext";
 import OrderItem from "../components/OrderItem";
 
 const History = () => {
-  const { orders, clearOrders } = useContext(CartContext);
-  const [showDetails, setShowDetails] = useState(false);
+  const { personalOrders } = useContext(CartContext);
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Order History</Text>
 
-      {/* <Button title="Clear Orders" onPress={() => clearOrders()} /> */}
-
-      {orders.length === 0 ? (
+      {personalOrders.length === 0 ? (
         <Text style={styles.noOrdersText}>No orders found.</Text>
       ) : (
-        orders.map((order) => <OrderItem key={order.id} order={order} />)
+        personalOrders.map((order) => <OrderItem key={order.id} order={order} />)
       )}
     </ScrollView>
   );
