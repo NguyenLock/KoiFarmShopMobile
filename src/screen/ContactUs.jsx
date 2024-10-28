@@ -21,9 +21,9 @@ export default function ContactUs() {
 
   const handleSubmit = () => {
     if (!name || !email || !message) {
-      Alert.alert("Thông báo", "Vui lòng điền đầy đủ thông tin!");
+      Alert.alert("Notice", "Please fill out all required fields!");
     } else {
-      Alert.alert("Cảm ơn!", "Chúng tôi sẽ sớm liên hệ với bạn.");
+      Alert.alert("Thanks you!", "We will contact you shortly.");
       // Reset form
       setName("");
       setEmail("");
@@ -46,11 +46,11 @@ export default function ContactUs() {
         >
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
-              <Text style={styles.title}>Liên hệ với chúng tôi</Text>
+              <Text style={styles.title}>Contact Us</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Họ tên"
-                value={name}
+                placeholder="FullName"
+                value={name}  
                 onChangeText={setName}
               />
               <TextInput
@@ -62,13 +62,13 @@ export default function ContactUs() {
               />
               <TextInput
                 style={[styles.input, styles.messageInput]}
-                placeholder="Tin nhắn của bạn"
+                placeholder="Your Message"
                 value={message}
                 onChangeText={setMessage}
                 multiline
                 numberOfLines={4}
               />
-              <Button title="Gửi" onPress={handleSubmit} style={styles.button} />
+              <Button title="Send" onPress={handleSubmit} style={styles.button} />
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
-    color: "#fff", // Adjust color to ensure visibility on background
+    color: "#fff",
   },
   input: {
     width: "100%",
@@ -112,8 +112,4 @@ const styles = StyleSheet.create({
     flex: 1,
     opacity: 0.8
   },
-  button:{
-    
-
-  }
 });
