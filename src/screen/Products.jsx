@@ -35,6 +35,14 @@ export default function Products({ navigation }) {
     setLoading(false);
   };
 
+  useEffect(() => {
+    getKoiFishes();
+  }, []);
+
+  useEffect(() => {
+    handleSearch();
+  }, [search]);
+
   const handleSearch = () => {
     if (search) {
       const filteredData = fishes.filter((item) => {
@@ -74,10 +82,6 @@ export default function Products({ navigation }) {
     navigation.navigate("Cart");
   };
 
-  useEffect(() => {
-    getKoiFishes();
-  }, []);
-
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -100,9 +104,12 @@ export default function Products({ navigation }) {
             value={search}
             onChangeText={setSearch}
           />
-          <TouchableOpacity style={styles.searchIcon} onPress={handleSearch}>
-            <Ionicons name="search" size={20} color="#000" />
-          </TouchableOpacity>
+          <Ionicons
+            name="search"
+            size={20}
+            color="#000"
+            style={styles.searchIcon}
+          />
         </View>
         <TouchableOpacity
           style={styles.filterButton}
