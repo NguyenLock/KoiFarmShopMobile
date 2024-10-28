@@ -94,6 +94,10 @@ export default function Detail({ route, navigation }) {
     : 0;
 
   const handleAddToCart = () => {
+    if (!currentUser) {
+      Alert.alert("Login Required", "Please login to add items to your cart.");
+      return;
+    }
     toggleCart(koi);
     Alert.alert("Added to Cart", `${koi.name} has been added to your cart.`);
   };

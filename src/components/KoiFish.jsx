@@ -11,9 +11,13 @@ import { useContext } from "react";
 import { CartContext } from "../contexts/CartContext";
 
 export default function KoiFish({ item }) {
-  const { toggleCart } = useContext(CartContext);
+  const { toggleCart, currentUser } = useContext(CartContext);
 
   const handleAddToCart = () => {
+    if (!currentUser) {
+      Alert.alert("Login Required", "Please login to add items to your cart.");
+      return;
+    }
     toggleCart(item);
     Alert.alert("Cart Updated", `${item.name} added to cart.`);
   };
