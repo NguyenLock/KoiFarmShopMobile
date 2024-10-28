@@ -19,6 +19,8 @@ WelCome To KoiFarmShopMobile Responsiblity
   <img src= "https://github.com/NguyenLock/KoiFarmShopMobile/blob/master/assets/Aboutus.jpg" width ="300" alt= "Aboutus">
   <img src= "https://github.com/NguyenLock/KoiFarmShopMobile/blob/master/assets/Detail.jpg" width ="300" alt= "Detail">
   <img src= "https://github.com/NguyenLock/KoiFarmShopMobile/blob/master/assets/Introduce.png" width ="300" alt= "Introduce">
-  <img src= "https://github.com/NguyenLock/KoiFarmShopMobile/blob/master/assets/produces.jpg" width ="300" alt= "Produces">
+  <img src= "https://github.com/NguyenLock/KoiFarmShopMobile/blob/master/assets/fileReadme/Products.png" width ="300" alt= "Produces">
+  <img src= "https://github.com/NguyenLock/KoiFarmShopMobile/blob/master/assets/fileReadme/Admin.png" width="300" alt="admin">
+  
 </p>
 Copyright © 2024
