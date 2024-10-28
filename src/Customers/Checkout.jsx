@@ -20,6 +20,7 @@ const Checkout = () => {
   const sections = [
     { key: "yourInformation" },
     { key: "orderSummary" },
+    { key: "consignment" },
     { key: "paymentMethod" },
     { key: "placeOrderButton" },
   ];
@@ -28,6 +29,7 @@ const Checkout = () => {
   const [address, setAddress] = useState("");
   const [voucher, setVoucher] = useState("");
   const [selectedPayment, setSelectedPayment] = useState("Cash On Delivery");
+  const [consignment, setConsignment] = useState(false);
 
   const handleSelect = (option) => {
     setSelectedPayment(option);
@@ -46,6 +48,7 @@ const Checkout = () => {
         address,
         voucher,
         selectedPayment,
+        consignment,
       };
       await saveOrder(orderDetail, total);
       clearCart();
@@ -129,6 +132,24 @@ const Checkout = () => {
                   value={voucher}
                   onChangeText={setVoucher}
                 />
+              </Card>
+            );
+          case "consignment":
+            return (
+              <Card containerStyle={styles.card}>
+                <Text style={styles.sectionTitle}>Consignment (optional)</Text>
+                <TouchableOpacity
+                  style={styles.paymentOption}
+                  onPress={() => setConsignment(!consignment)}
+                >
+                  <Icon
+                    name={consignment ? "square" : "square-o"}
+                    type="font-awesome"
+                    size={24}
+                    color={consignment ? "#4CAF50" : "#ccc"}
+                  />
+                  <Text style={styles.optionText}>Consignment</Text>
+                </TouchableOpacity>
               </Card>
             );
           case "paymentMethod":

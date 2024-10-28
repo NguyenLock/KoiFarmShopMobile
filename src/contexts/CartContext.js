@@ -138,7 +138,7 @@ export const CartProvider = ({ children }) => {
       items: cart,
       details: orderDetails,
       total: total,
-      status: "Pending",
+      status: orderDetails.consignment ? "Consignment" : "Pending",
       createdAt: new Date(),
     };
     const updatedOrders = [...orders, order];
