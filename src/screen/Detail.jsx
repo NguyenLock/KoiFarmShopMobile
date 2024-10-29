@@ -131,6 +131,9 @@ export default function Detail({ route, navigation }) {
             {averageRating} ({combinedReviews.length} reviews)
           </Text>
         </View>
+        <View>
+          <Text style={styles.description}>{koi.breed}</Text>
+        </View>
 
         <Text style={styles.description}>{koi.description}</Text>
 

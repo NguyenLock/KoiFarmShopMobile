@@ -10,25 +10,53 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { CheckBox } from "react-native-elements";
 import { CartContext } from "../contexts/CartContext";
 import { Ionicons } from "@expo/vector-icons";
-import KoiFish from "../components/KoiFish";
 
 export default function Cart({ navigation }) {
   const {
     cart,
-    toggleCart,
+    removeFromCart,
+    removeMultipleFromCart,
     clearCart,
     increaseQuantity,
     decreaseQuantity,
-    currentUser,
   } = useContext(CartContext);
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [showCheckboxes, setShowCheckboxes] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
 
   const handleClearCart = () => {
     clearCart();
     setModalVisible(false);
     Alert.alert("Cart cleared!", "All items have been removed from your cart.");
+  };
+
+  const handleSelectItem = (itemId) => {
+    setSelectedItems((prevSelectedItems) => {
+      if (prevSelectedItems.includes(itemId)) {
+        return prevSelectedItems.filter((id) => id !== itemId);
+      } else {
+        return [...prevSelectedItems, itemId];
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(cart.map((item) => item.id));
+    }
+    setSelectAll(!selectAll);
+  };
+
+  const handleDeleteSelectedItems = async () => {
+    await removeMultipleFromCart(selectedItems);
+    setSelectedItems([]);
+    setSelectAll(false);
   };
 
   const calculateTotal = () => {
@@ -37,12 +65,12 @@ export default function Cart({ navigation }) {
       .toFixed(2);
   };
 
-  const navigateToCheckout = () => {
-    if (!currentUser) {
-      navigation.navigate("Login");
-      return;
+  const toggleCheckboxes = () => {
+    if (showCheckboxes) {
+      setSelectedItems([]);
+      setSelectAll(false);
     }
-    navigation.navigate("Checkout");
+    setShowCheckboxes(!showCheckboxes);
   };
 
   return (
@@ -53,16 +81,37 @@ export default function Cart({ navigation }) {
         </View>
       ) : (
         <>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.toggleCheckboxButton}
+              onPress={toggleCheckboxes}
+            >
+              <Text style={styles.toggleCheckboxButtonText}>
+                {showCheckboxes ? "Hủy" : "Chọn"}
+              </Text>
+            </TouchableOpacity>
+            {showCheckboxes && (
+              <CheckBox
+                title="Select All"
+                checked={selectAll}
+                onPress={handleSelectAll}
+                containerStyle={styles.selectAllCheckbox}
+              />
+            )}
+          </View>
           <FlatList
             data={cart}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Detail", { koi: item })}
-                style={styles.fishContainer}
-              >
+              <TouchableOpacity style={styles.fishContainer}>
                 <View style={styles.fishCard}>
+                  {showCheckboxes && (
+                    <CheckBox
+                      checked={selectedItems.includes(item.id)}
+                      onPress={() => handleSelectItem(item.id)}
+                    />
+                  )}
                   <View style={styles.imageWrapper}>
                     <Image source={{ uri: item.image }} style={styles.image} />
                   </View>
@@ -94,7 +143,7 @@ export default function Cart({ navigation }) {
                     </View>
                   </View>
                   <TouchableOpacity
-                    onPress={() => toggleCart(item)}
+                    onPress={() => removeFromCart(item.id)}
                     style={styles.addToCartButton}
                   >
                     <Ionicons name="trash" size={30} color="red" />
@@ -107,10 +156,18 @@ export default function Cart({ navigation }) {
             <Text style={styles.totalText}>Total: ${calculateTotal()}</Text>
             <TouchableOpacity
               style={styles.checkoutButton}
-              onPress={navigateToCheckout}
+              onPress={() => navigation.navigate("Checkout")}
             >
               <Text style={styles.checkoutText}>Go to Checkout</Text>
             </TouchableOpacity>
+            {selectedItems.length > 0 && (
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={handleDeleteSelectedItems}
+              >
+                <Text style={styles.deleteButtonText}>Delete Selected</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </>
       )}
@@ -255,7 +312,39 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  //---------------------------------------------------------------------------------
+  deleteButton: {
+    marginTop: 10,
+    backgroundColor: "red",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  deleteButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  toggleCheckboxButton: {
+    backgroundColor: "#470101",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+  },
+  toggleCheckboxButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  selectAllCheckbox: {
+    backgroundColor: "transparent",
+    borderWidth: 0,
+  },
   fishContainer: {
     marginBottom: 15,
     paddingHorizontal: 10,
