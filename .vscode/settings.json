@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "get Product, KoiDetail & modify koiFish",
-        "filter by rating"
+        "filter by rating",
+        "select to delete cart"
     ]
 }
