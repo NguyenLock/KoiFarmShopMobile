@@ -18,6 +18,7 @@ import ContactUs from "./src/screen/ContactUs";
 import News from "./src/screen/News";
 import Cart from "./src/Customers/Cart";
 import DetailNews from "./src/screen/DetailNews";
+import Map from "./src/Customers/Map";
 
 const Stack = createNativeStackNavigator();
 
@@ -69,6 +70,17 @@ export default function App() {
             component={Checkout}
             options={{
               title: "Checkout",
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerStyle: { backgroundColor: "#470101" },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="Map"
+            component={Map}
+            options={{
+              title: "Map",
               headerShown: true,
               headerTitleAlign: "center",
               headerStyle: { backgroundColor: "#470101" },
