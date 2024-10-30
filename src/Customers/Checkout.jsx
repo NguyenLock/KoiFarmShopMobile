@@ -10,6 +10,7 @@ import {
   FlatList,
   Image,
   Platform,
+  Modal,
 } from "react-native";
 import { Card, Button, Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
@@ -35,6 +36,8 @@ const Checkout = ({ route }) => {
   const initialDate = new Date();
   const [date, setDate] = useState(initialDate);
   const [show, setShow] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [orderTotal, setOrderTotal] = useState(0);
 
   const onChange = (event, selectedDate) => {
     if (selectedDate >= initialDate) {
@@ -78,12 +81,20 @@ const Checkout = ({ route }) => {
         voucher,
         selectedPayment,
         consignment,
-        consignmentDate: date,
+        consignmentDate: date.toISOString(), // Save date as ISO string
       };
       await saveOrder(orderDetail, total);
       clearCart();
-      Alert.alert("Order Placed", `Thank you for your purchase, ${fullName}!`);
-      navigation.navigate("Home");
+      setOrderTotal(total);
+      if (selectedPayment === "Smart Banking") {
+        setModalVisible(true);
+      } else {
+        Alert.alert(
+          "Order Placed",
+          `Thank you for your purchase, ${fullName}!`
+        );
+        navigation.navigate("Home");
+      }
     }
   };
 
@@ -104,191 +115,227 @@ const Checkout = ({ route }) => {
   ).toFixed(2);
 
   return (
-    <FlatList
-      data={sections}
-      renderItem={({ item }) => {
-        switch (item.key) {
-          case "yourInformation":
-            return (
-              <Card containerStyle={styles.card}>
-                <Text style={styles.sectionTitle}>Your Information</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Full Name"
-                  value={fullName}
-                  onChangeText={setFullName}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Phone"
-                  keyboardType="phone-pad"
-                  value={phone}
-                  onChangeText={setPhone}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Address"
-                  value={address}
-                  onChangeText={setAddress}
-                />
-                <Button
-                  title="Select address"
-                  onPress={() => navigation.navigate("Map")}
-                  buttonStyle={styles.placeOrderButton}
-                  containerStyle={styles.buttonAddress}
-                />
-              </Card>
-            );
-          case "orderSummary":
-            return (
-              <Card containerStyle={styles.card}>
-                <Text style={styles.sectionTitle}>Order Summary</Text>
-                {cart.map((item, i) => (
-                  <OrderDetailItem key={i} item={item} />
-                ))}
-                <View style={styles.orderItem}>
-                  <Text style={styles.itemText}>Subtotal:</Text>
-                  <Text style={styles.priceItem}>${calculateTotal()}</Text>
-                </View>
-                {!consignment && (
+    <View style={styles.container}>
+      <FlatList
+        data={sections}
+        renderItem={({ item }) => {
+          switch (item.key) {
+            case "yourInformation":
+              return (
+                <Card containerStyle={styles.card}>
+                  <Text style={styles.sectionTitle}>Your Information</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Full Name"
+                    value={fullName}
+                    onChangeText={setFullName}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Phone"
+                    keyboardType="phone-pad"
+                    value={phone}
+                    onChangeText={setPhone}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Address"
+                    value={address}
+                    onChangeText={setAddress}
+                  />
+                  <Button
+                    title="Select address"
+                    onPress={() => navigation.navigate("Map")}
+                    buttonStyle={styles.placeOrderButton}
+                    containerStyle={styles.buttonAddress}
+                  />
+                </Card>
+              );
+            case "orderSummary":
+              return (
+                <Card containerStyle={styles.card}>
+                  <Text style={styles.sectionTitle}>Order Summary</Text>
+                  {cart.map((item, i) => (
+                    <OrderDetailItem key={i} item={item} />
+                  ))}
                   <View style={styles.orderItem}>
-                    <Text style={styles.itemText}>Shipping fee:</Text>
-                    <Text style={styles.priceItem}>${shippingFee}</Text>
+                    <Text style={styles.itemText}>Subtotal:</Text>
+                    <Text style={styles.priceItem}>${calculateTotal()}</Text>
                   </View>
-                )}
-                <View style={styles.orderItem}>
-                  <Text style={styles.itemText}>Tax:</Text>
-                  <Text style={styles.priceItem}>${tax}</Text>
-                </View>
-                <View style={styles.totalContainer}>
-                  <Text style={styles.totalText}>Total:</Text>
-                  <Text style={styles.priceText}>${total}</Text>
-                </View>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Voucher Code (Optional)"
-                  value={voucher}
-                  onChangeText={setVoucher}
-                />
-              </Card>
-            );
-          case "consignment":
-            return (
-              <Card containerStyle={styles.card}>
-                <Text style={styles.sectionTitle}>Consignment (optional)</Text>
-                <TouchableOpacity
-                  style={styles.paymentOption}
-                  onPress={() => setConsignment(!consignment)}
-                >
-                  <Icon
-                    name={consignment ? "square" : "square-o"}
-                    type="font-awesome"
-                    size={24}
-                    color={consignment ? "#4CAF50" : "#ccc"}
+                  {!consignment && (
+                    <View style={styles.orderItem}>
+                      <Text style={styles.itemText}>Shipping fee:</Text>
+                      <Text style={styles.priceItem}>${shippingFee}</Text>
+                    </View>
+                  )}
+                  <View style={styles.orderItem}>
+                    <Text style={styles.itemText}>Tax:</Text>
+                    <Text style={styles.priceItem}>${tax}</Text>
+                  </View>
+                  <View style={styles.totalContainer}>
+                    <Text style={styles.totalText}>Total:</Text>
+                    <Text style={styles.priceText}>${total}</Text>
+                  </View>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Voucher Code (Optional)"
+                    value={voucher}
+                    onChangeText={setVoucher}
                   />
-                  <Text style={styles.optionText}>Consignment</Text>
-                </TouchableOpacity>
-                {consignment && (
-                  <View>
-                    <Text style={styles.selectedDate}>
-                      Selected Date: {date.toLocaleDateString()}
-                    </Text>
-                    <Button
-                      onPress={showDatepicker}
-                      title="Show Date Picker"
-                      buttonStyle={styles.placeOrderButton}
-                      containerStyle={styles.buttonAddress}
+                </Card>
+              );
+            case "consignment":
+              return (
+                <Card containerStyle={styles.card}>
+                  <Text style={styles.sectionTitle}>
+                    Consignment (optional)
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.paymentOption}
+                    onPress={() => setConsignment(!consignment)}
+                  >
+                    <Icon
+                      name={consignment ? "square" : "square-o"}
+                      type="font-awesome"
+                      size={24}
+                      color={consignment ? "#4CAF50" : "#ccc"}
                     />
-                    {show && (
-                      <DateTimePicker
-                        testID="dateTimePicker"
-                        value={date}
-                        mode="date"
-                        display="default"
-                        onChange={onChange}
+                    <Text style={styles.optionText}>Consignment</Text>
+                  </TouchableOpacity>
+                  {consignment && (
+                    <View>
+                      <Text style={styles.selectedDate}>
+                        Selected Date: {date.toLocaleDateString()}
+                      </Text>
+                      <Button
+                        onPress={showDatepicker}
+                        title="Show Date Picker"
+                        buttonStyle={styles.placeOrderButton}
+                        containerStyle={styles.buttonAddress}
                       />
-                    )}
-                  </View>
-                )}
-              </Card>
-            );
-          case "paymentMethod":
-            return (
-              <Card containerStyle={styles.card}>
-                <Text style={styles.sectionTitle}>Payment Method</Text>
-                <TouchableOpacity
-                  style={styles.paymentOption}
-                  onPress={() => handleSelect("Credit Card")}
-                >
-                  <Icon
-                    name={
-                      selectedPayment === "Credit Card"
-                        ? "dot-circle-o"
-                        : "circle-o"
-                    }
-                    type="font-awesome"
-                    size={24}
-                    color={
-                      selectedPayment === "Credit Card" ? "#4CAF50" : "#ccc"
-                    }
-                  />
-                  <Text style={styles.optionText}>Credit Card</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.paymentOption}
-                  onPress={() => handleSelect("Smart Banking")}
-                >
-                  <Icon
-                    name={
-                      selectedPayment === "Smart Banking"
-                        ? "dot-circle-o"
-                        : "circle-o"
-                    }
-                    type="font-awesome"
-                    size={24}
-                    color={
-                      selectedPayment === "Smart Banking" ? "#4CAF50" : "#ccc"
-                    }
-                  />
-                  <Text style={styles.optionText}>Smart Banking</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.paymentOption}
-                  onPress={() => handleSelect("Cash On Delivery")}
-                >
-                  <Icon
-                    name={
-                      selectedPayment === "Cash On Delivery"
-                        ? "dot-circle-o"
-                        : "circle-o"
-                    }
-                    type="font-awesome"
-                    size={24}
-                    color={
-                      selectedPayment === "Cash On Delivery"
-                        ? "#4CAF50"
-                        : "#ccc"
-                    }
-                  />
-                  <Text style={styles.optionText}>Cash On Delivery</Text>
-                </TouchableOpacity>
-              </Card>
-            );
-          case "placeOrderButton":
-            return (
-              <Button
-                title="Place Order"
-                onPress={handlePlaceOrder}
-                buttonStyle={styles.placeOrderButton}
-                containerStyle={styles.buttonContainer}
-              />
-            );
-          default:
-            return null;
-        }
-      }}
-      keyExtractor={(item) => item.key}
-    />
+                      {show && (
+                        <DateTimePicker
+                          testID="dateTimePicker"
+                          value={date}
+                          mode="date"
+                          display="default"
+                          onChange={onChange}
+                        />
+                      )}
+                    </View>
+                  )}
+                </Card>
+              );
+            case "paymentMethod":
+              return (
+                <Card containerStyle={styles.card}>
+                  <Text style={styles.sectionTitle}>Payment Method</Text>
+                  <TouchableOpacity
+                    style={styles.paymentOption}
+                    onPress={() => handleSelect("Credit Card")}
+                  >
+                    <Icon
+                      name={
+                        selectedPayment === "Credit Card"
+                          ? "dot-circle-o"
+                          : "circle-o"
+                      }
+                      type="font-awesome"
+                      size={24}
+                      color={
+                        selectedPayment === "Credit Card" ? "#4CAF50" : "#ccc"
+                      }
+                    />
+                    <Text style={styles.optionText}>Credit Card</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.paymentOption}
+                    onPress={() => handleSelect("Smart Banking")}
+                  >
+                    <Icon
+                      name={
+                        selectedPayment === "Smart Banking"
+                          ? "dot-circle-o"
+                          : "circle-o"
+                      }
+                      type="font-awesome"
+                      size={24}
+                      color={
+                        selectedPayment === "Smart Banking" ? "#4CAF50" : "#ccc"
+                      }
+                    />
+                    <Text style={styles.optionText}>Smart Banking</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.paymentOption}
+                    onPress={() => handleSelect("Cash On Delivery")}
+                  >
+                    <Icon
+                      name={
+                        selectedPayment === "Cash On Delivery"
+                          ? "dot-circle-o"
+                          : "circle-o"
+                      }
+                      type="font-awesome"
+                      size={24}
+                      color={
+                        selectedPayment === "Cash On Delivery"
+                          ? "#4CAF50"
+                          : "#ccc"
+                      }
+                    />
+                    <Text style={styles.optionText}>Cash On Delivery</Text>
+                  </TouchableOpacity>
+                </Card>
+              );
+            case "placeOrderButton":
+              return (
+                <Button
+                  title="Place Order"
+                  onPress={handlePlaceOrder}
+                  buttonStyle={styles.placeOrderButton}
+                  containerStyle={styles.buttonContainer}
+                />
+              );
+            default:
+              return null;
+          }
+        }}
+        keyExtractor={(item) => item.key}
+      />
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Payment Information</Text>
+            <Text style={styles.modalText}>STK: 123456789</Text>
+            <Text style={styles.modalText}>
+              Tên người nhận: Pham Manh Cuong
+            </Text>
+            <Text style={styles.modalText}>Ngân hàng: BIDV Bank</Text>
+            <Text style={styles.modalText}>
+              Nội dung chuyển khoản: Order #11245
+            </Text>
+            <Text style={styles.modalText}>Total: ${orderTotal}</Text>
+            <Button
+              title="Close"
+              onPress={() => {
+                setModalVisible(false);
+                navigation.navigate("Home");
+              }}
+              buttonStyle={styles.modalButton}
+            />
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 };
 
@@ -377,6 +424,33 @@ const styles = StyleSheet.create({
   buttonAddress: {
     marginVertical: 20,
     borderRadius: 12,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  modalButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
   },
 });
 
