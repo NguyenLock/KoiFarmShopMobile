@@ -27,6 +27,15 @@ export default function Cart({ navigation }) {
   const [selectedItems, setSelectedItems] = useState([]);
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+
+  const handleLongPress = (itemId) => {
+    setSelectedItemId(itemId);
+  };
+
+  const handleOutsidePress = () => {
+    setSelectedItemId(null);
+  };
 
   const handleClearCart = () => {
     clearCart();
@@ -74,7 +83,7 @@ export default function Cart({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onPress={handleOutsidePress}>
       {cart.length === 0 ? (
         <View style={styles.containerNothing}>
           <Text>No Koi fish in cart.</Text>
@@ -87,7 +96,7 @@ export default function Cart({ navigation }) {
               onPress={toggleCheckboxes}
             >
               <Text style={styles.toggleCheckboxButtonText}>
-                {showCheckboxes ? "Hủy" : "Chọn"}
+                {showCheckboxes ? "Cancel" : "Select"}
               </Text>
             </TouchableOpacity>
             {showCheckboxes && (
@@ -99,76 +108,92 @@ export default function Cart({ navigation }) {
               />
             )}
           </View>
-          <FlatList
-            data={cart}
-            keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <TouchableOpacity style={styles.fishContainer}>
-                <View style={styles.fishCard}>
-                  {showCheckboxes && (
-                    <CheckBox
-                      checked={selectedItems.includes(item.id)}
-                      onPress={() => handleSelectItem(item.id)}
-                    />
-                  )}
-                  <View style={styles.imageWrapper}>
-                    <Image source={{ uri: item.image }} style={styles.image} />
-                  </View>
-                  <View style={styles.info}>
-                    <Text style={styles.fishName}>{item.name}</Text>
-                    <View style={styles.priceContainer}>
-                      <Text style={styles.price}>${item.price}</Text>
+
+          <Pressable style={{ flex: 1 }} onPress={handleOutsidePress}>
+            <FlatList
+              data={cart}
+              keyExtractor={(item) => item.id}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.fishContainer}
+                  onLongPress={() => handleLongPress(item.id)}
+                  delayLongPress={500}
+                  onPress={() => navigation.navigate("Detail", { koi: item })}
+                >
+                  <View style={styles.fishCard}>
+                    {showCheckboxes && (
+                      <CheckBox
+                        checked={selectedItems.includes(item.id)}
+                        onPress={() => handleSelectItem(item.id)}
+                      />
+                    )}
+                    <View style={styles.imageWrapper}>
+                      <Image
+                        source={{ uri: item.image }}
+                        style={styles.image}
+                      />
                     </View>
-                    <View style={styles.quantityContainer}>
-                      <TouchableOpacity
-                        onPress={() => decreaseQuantity(item.id)}
-                      >
-                        <Ionicons
-                          name="remove-circle-outline"
-                          size={28}
-                          color={item.quantity === 1 ? "#ccc" : "#470101"}
-                        />
-                      </TouchableOpacity>
-                      <Text style={styles.quantityText}>{item.quantity}</Text>
-                      <TouchableOpacity
-                        onPress={() => increaseQuantity(item.id)}
-                      >
-                        <Ionicons
-                          name="add-circle-outline"
-                          size={28}
-                          color="#470101"
-                        />
-                      </TouchableOpacity>
+                    <View style={styles.info}>
+                      <Text style={styles.fishName}>{item.name}</Text>
+                      <View style={styles.priceContainer}>
+                        <Text style={styles.price}>${item.price}</Text>
+                      </View>
+                      <View style={styles.quantityContainer}>
+                        <TouchableOpacity
+                          onPress={() => decreaseQuantity(item.id)}
+                        >
+                          <Ionicons
+                            name="remove-circle-outline"
+                            size={28}
+                            color={item.quantity === 1 ? "#ccc" : "#470101"}
+                          />
+                        </TouchableOpacity>
+                        <Text style={styles.quantityText}>{item.quantity}</Text>
+                        <TouchableOpacity
+                          onPress={() => increaseQuantity(item.id)}
+                        >
+                          <Ionicons
+                            name="add-circle-outline"
+                            size={28}
+                            color="#470101"
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </View>
+                    {selectedItemId === item.id && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          removeFromCart(item.id);
+                          handleOutsidePress();
+                        }}
+                        style={styles.removeButton}
+                      >
+                        <Ionicons name="trash" size={26} color="white" />
+                      </TouchableOpacity>
+                    )}
                   </View>
-                  <TouchableOpacity
-                    onPress={() => removeFromCart(item.id)}
-                    style={styles.addToCartButton}
-                  >
-                    <Ionicons name="trash" size={30} color="red" />
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            )}
-          />
-          <View style={styles.footer}>
-            <Text style={styles.totalText}>Total: ${calculateTotal()}</Text>
-            <TouchableOpacity
-              style={styles.checkoutButton}
-              onPress={() => navigation.navigate("Checkout")}
-            >
-              <Text style={styles.checkoutText}>Go to Checkout</Text>
-            </TouchableOpacity>
-            {selectedItems.length > 0 && (
+                </TouchableOpacity>
+              )}
+            />
+            <View style={styles.footer}>
+              <Text style={styles.totalText}>Total: ${calculateTotal()}</Text>
               <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={handleDeleteSelectedItems}
+                style={styles.checkoutButton}
+                onPress={() => navigation.navigate("Checkout")}
               >
-                <Text style={styles.deleteButtonText}>Delete Selected</Text>
+                <Text style={styles.checkoutText}>Go to Checkout</Text>
               </TouchableOpacity>
-            )}
-          </View>
+              {selectedItems.length > 0 && (
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={handleDeleteSelectedItems}
+                >
+                  <Text style={styles.deleteButtonText}>Delete Selected</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </Pressable>
         </>
       )}
 
@@ -209,7 +234,7 @@ export default function Cart({ navigation }) {
             style={styles.buttonDelete}
             onPress={() => setModalVisible(true)}
           >
-            <Ionicons name="trash" size={24} color="white" />
+            <Ionicons name="trash" size={26} color="white" />
           </Pressable>
         </View>
       )}
@@ -256,9 +281,9 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   buttonDelete: {
-    borderRadius: 100,
+    borderRadius: 50,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 14,
     backgroundColor: "#470101",
     position: "absolute",
     bottom: 10,
@@ -333,8 +358,9 @@ const styles = StyleSheet.create({
   toggleCheckboxButton: {
     backgroundColor: "#470101",
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 25,
+    paddingHorizontal: 25,
+    borderRadius: 12,
+    marginStart: 10,
   },
   toggleCheckboxButtonText: {
     color: "#fff",
@@ -417,7 +443,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   removeButton: {
-    padding: 8,
+    padding: 12,
     marginLeft: 10,
+    backgroundColor: "#470101",
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
