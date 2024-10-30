@@ -45,7 +45,10 @@ export default function OrderItem({ order }) {
       )}
 
       <Text style={[styles.orderDetail, { color: colorStatus }]}>
-        Status: {order.status}
+        Status: {order.status}{" "}
+        {order.details.consignment
+          ? "- " + order.details.consignmentDate.toLocaleDateString()
+          : ""}
       </Text>
       <Text style={styles.orderDetail}>
         Date: {new Date(order.createdAt).toLocaleDateString()}{" "}

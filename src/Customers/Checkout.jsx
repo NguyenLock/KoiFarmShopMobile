@@ -9,11 +9,13 @@ import {
   TextInput,
   FlatList,
   Image,
+  Platform,
 } from "react-native";
 import { Card, Button, Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 import { CartContext } from "../contexts/CartContext";
 import OrderDetailItem from "../components/OrderDetailItem";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const Checkout = ({ route }) => {
   const navigation = useNavigation();
@@ -30,6 +32,27 @@ const Checkout = ({ route }) => {
   const [voucher, setVoucher] = useState("");
   const [selectedPayment, setSelectedPayment] = useState("Cash On Delivery");
   const [consignment, setConsignment] = useState(false);
+  const initialDate = new Date();
+  const [date, setDate] = useState(initialDate);
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    if (selectedDate >= initialDate) {
+      const currentDate = selectedDate || date;
+      setDate(currentDate);
+      setShow(Platform.OS === "ios");
+    } else {
+      Alert.alert(
+        "Invalid Date",
+        "Please select a date later than the current date."
+      );
+      setShow(Platform.OS === "ios");
+    }
+  };
+
+  const showDatepicker = () => {
+    setShow(true);
+  };
 
   const handleSelect = (option) => {
     setSelectedPayment(option);
@@ -55,6 +78,7 @@ const Checkout = ({ route }) => {
         voucher,
         selectedPayment,
         consignment,
+        consignmentDate: date,
       };
       await saveOrder(orderDetail, total);
       clearCart();
@@ -69,7 +93,7 @@ const Checkout = ({ route }) => {
       .toFixed(2);
   };
 
-  const shippingFee = (calculateTotal() * 0.1).toFixed(2);
+  const shippingFee = !consignment ? (calculateTotal() * 0.1).toFixed(2) : 0;
 
   const tax = (calculateTotal() * 0.05).toFixed(2);
 
@@ -126,10 +150,12 @@ const Checkout = ({ route }) => {
                   <Text style={styles.itemText}>Subtotal:</Text>
                   <Text style={styles.priceItem}>${calculateTotal()}</Text>
                 </View>
-                <View style={styles.orderItem}>
-                  <Text style={styles.itemText}>Shipping fee:</Text>
-                  <Text style={styles.priceItem}>${shippingFee}</Text>
-                </View>
+                {!consignment && (
+                  <View style={styles.orderItem}>
+                    <Text style={styles.itemText}>Shipping fee:</Text>
+                    <Text style={styles.priceItem}>${shippingFee}</Text>
+                  </View>
+                )}
                 <View style={styles.orderItem}>
                   <Text style={styles.itemText}>Tax:</Text>
                   <Text style={styles.priceItem}>${tax}</Text>
@@ -162,6 +188,28 @@ const Checkout = ({ route }) => {
                   />
                   <Text style={styles.optionText}>Consignment</Text>
                 </TouchableOpacity>
+                {consignment && (
+                  <View>
+                    <Text style={styles.selectedDate}>
+                      Selected Date: {date.toLocaleDateString()}
+                    </Text>
+                    <Button
+                      onPress={showDatepicker}
+                      title="Show Date Picker"
+                      buttonStyle={styles.placeOrderButton}
+                      containerStyle={styles.buttonAddress}
+                    />
+                    {show && (
+                      <DateTimePicker
+                        testID="dateTimePicker"
+                        value={date}
+                        mode="date"
+                        display="default"
+                        onChange={onChange}
+                      />
+                    )}
+                  </View>
+                )}
               </Card>
             );
           case "paymentMethod":
@@ -265,6 +313,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     color: "#470101",
+  },
+  selectedDate: {
+    fontSize: 16,
+    marginTop: 20,
+    fontStyle: "italic",
   },
   input: {
     borderWidth: 1,
