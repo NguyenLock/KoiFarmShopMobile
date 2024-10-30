@@ -25,6 +25,11 @@ export default function OrderItem({ order }) {
     }
   });
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
   return (
     <TouchableOpacity
       key={order.id}
@@ -47,7 +52,7 @@ export default function OrderItem({ order }) {
       <Text style={[styles.orderDetail, { color: colorStatus }]}>
         Status: {order.status}{" "}
         {order.details.consignment
-          ? "- " + order.details.consignmentDate.toLocaleDateString()
+          ? "- " + formatDate(order.details.consignmentDate)
           : ""}
       </Text>
       <Text style={styles.orderDetail}>

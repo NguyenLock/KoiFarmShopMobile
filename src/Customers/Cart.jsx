@@ -126,6 +126,7 @@ export default function Cart({ navigation }) {
                       <CheckBox
                         checked={selectedItems.includes(item.id)}
                         onPress={() => handleSelectItem(item.id)}
+                        containerStyle={{ margin: 0, padding: 0 }}
                       />
                     )}
                     <View style={styles.imageWrapper}>
