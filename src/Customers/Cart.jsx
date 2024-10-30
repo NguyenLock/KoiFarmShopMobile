@@ -330,12 +330,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#28a745",
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 5,
+    borderRadius: 12,
+    width: "100%",
+    textAlign: "center",
   },
   checkoutText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
+    textAlign: "center",
+    paddingVertical: 5,
   },
   deleteButton: {
     marginTop: 10,
