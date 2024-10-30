@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import { CartContext } from "../contexts/CartContext";
 import OrderDetailItem from "../components/OrderDetailItem";
 
-const Checkout = () => {
+const Checkout = ({ route }) => {
   const navigation = useNavigation();
   const sections = [
     { key: "yourInformation" },
@@ -34,6 +34,12 @@ const Checkout = () => {
   const handleSelect = (option) => {
     setSelectedPayment(option);
   };
+
+  useEffect(() => {
+    if (route.params?.selectedLocationName) {
+      setAddress(route.params.selectedLocationName);
+    }
+  }, [route.params?.selectedLocationName]);
 
   const { cart, clearCart, saveOrder, currentUser } = useContext(CartContext);
 
@@ -100,6 +106,12 @@ const Checkout = () => {
                   placeholder="Address"
                   value={address}
                   onChangeText={setAddress}
+                />
+                <Button
+                  title="Select address"
+                  onPress={() => navigation.navigate("Map")}
+                  buttonStyle={styles.placeOrderButton}
+                  containerStyle={styles.buttonAddress}
                 />
               </Card>
             );
@@ -306,6 +318,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: 15,
+    marginVertical: 20,
+    borderRadius: 12,
+  },
+  buttonAddress: {
     marginVertical: 20,
     borderRadius: 12,
   },
