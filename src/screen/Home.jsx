@@ -9,12 +9,14 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import navigation hook
+import { useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 const ASPECT_RATIO = 16 / 9;
+const ITEM_WIDTH = windowWidth * 0.8;
+const SPACING = 10;
 
-const images = [
+const originalImages = [
   require('../../assets/koiEat.jpg'),
   require('../../assets/imgKoi1.jpg'), 
   require('../../assets/imgKoi2.jpg'),
@@ -22,28 +24,72 @@ const images = [
 ];
 
 export default function Home() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const navigation = useNavigation();
   const flatListRef = useRef(null);
-  const navigation = useNavigation(); // Initialize navigation
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      handleNext(); 
-    }, 3000); 
-
-    return () => clearInterval(interval); 
-  }, [currentIndex]);
-
-  const handleNext = () => {
-    const nextIndex = (currentIndex + 1) % images.length;
-    setCurrentIndex(nextIndex);
-    flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
+  
+  const getExtendedImages = () => {
+    return [
+      originalImages[originalImages.length - 1],
+      ...originalImages,
+      originalImages[0]
+    ];
   };
 
-  const handlePrevious = () => {
-    const prevIndex = (currentIndex - 1 + images.length) % images.length;
-    setCurrentIndex(prevIndex);
-    flatListRef.current.scrollToIndex({ index: prevIndex, animated: true });
+  const [images] = useState(getExtendedImages());
+
+  useEffect(() => {
+    flatListRef.current?.scrollToIndex({
+      index: 1,
+      animated: false
+    });
+  }, []);
+
+  // Auto scroll effect
+  useEffect(() => {
+    const autoScroll = setInterval(() => {
+      const nextIndex = (activeIndex + 1) % (images.length - 2) + 1;
+      
+      setActiveIndex(nextIndex);
+      flatListRef.current?.scrollToIndex({
+        index: nextIndex,
+        animated: true
+      });
+    }, 5000);
+
+    return () => clearInterval(autoScroll);
+  }, [activeIndex]);
+
+  const handleScroll = (event) => {
+    const scrollPosition = event.nativeEvent.contentOffset.x;
+    const index = Math.round(scrollPosition / (ITEM_WIDTH + SPACING));
+    setActiveIndex(index);
+
+    if (index === 0) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToIndex({
+          index: images.length - 2,
+          animated: false
+        });
+        setActiveIndex(images.length - 2);
+      }, 300);
+    } else if (index === images.length - 1) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToIndex({
+          index: 1,
+          animated: false
+        });
+        setActiveIndex(1);
+      }, 300);
+    }
+  };
+
+  const renderCarouselItem = ({ item, index }) => {
+    return (
+      <View style={styles.carouselItemContainer}>
+        <Image source={item} style={styles.carouselImage} />
+      </View>
+    );
   };
 
   return (
@@ -74,28 +120,27 @@ export default function Home() {
 
       {/* Carousel Section */}
       <View style={styles.carouselContainer}>
-        <TouchableOpacity onPress={handlePrevious} style={styles.arrowButton}>
-          <Text style={styles.arrowText}>{'<'}</Text>
-        </TouchableOpacity>
-
         <FlatList
           ref={flatListRef}
           data={images}
+          renderItem={renderCarouselItem}
+          keyExtractor={(_, index) => index.toString()}
           horizontal
-          pagingEnabled
-          scrollEnabled={false}
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <Image source={item} style={styles.carouselImage} />
-          )}
+          snapToInterval={ITEM_WIDTH + SPACING}
+          decelerationRate="fast"
+          contentContainerStyle={styles.carouselContent}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          getItemLayout={(data, index) => ({
+            length: ITEM_WIDTH + SPACING,
+            offset: (ITEM_WIDTH + SPACING) * index,
+            index,
+          })}
+          initialScrollIndex={1}
         />
-
-        <TouchableOpacity onPress={handleNext} style={styles.arrowButton}>
-          <Text style={styles.arrowText}>{'>'}</Text>
-        </TouchableOpacity>
       </View>
-      
+
       {/* Navigation Buttons Section */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity
@@ -119,7 +164,6 @@ export default function Home() {
           <Text style={styles.navButtonText}>News</Text>
         </TouchableOpacity>
       </View>
-
     </ScrollView>
   );
 }
@@ -172,23 +216,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   carouselContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     marginVertical: 20,
   },
-  arrowButton: {
-    padding: 10,
+  carouselContent: {
+    paddingHorizontal: (windowWidth - ITEM_WIDTH) / 2,
   },
-  arrowText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+  carouselItemContainer: {
+    width: ITEM_WIDTH,
+    marginHorizontal: SPACING / 2,
+    borderRadius: 15,
+    backgroundColor: '#000',
+    overflow: 'hidden',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   carouselImage: {
-    width: windowWidth * 0.8,
-    height: windowWidth * 0.5,
-    borderRadius: 10,
-    marginHorizontal: 10,
-  },
+    width: ITEM_WIDTH,
+    height: ITEM_WIDTH * 1.2,
+    resizeMode: 'cover',
+  }
 });

@@ -89,6 +89,24 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+  const removeFromCart = async (itemId) => {
+    const updatedCart = cart.filter((item) => item.id !== itemId);
+    setCart(updatedCart);
+    await AsyncStorage.setItem(
+      "cart" + currentUser?.id,
+      JSON.stringify(updatedCart)
+    );
+  };
+
+  const removeMultipleFromCart = async (itemIds) => {
+    const updatedCart = cart.filter((item) => !itemIds.includes(item.id));
+    setCart(updatedCart);
+    await AsyncStorage.setItem(
+      "cart" + currentUser?.id,
+      JSON.stringify(updatedCart)
+    );
+  };
+
   const increaseQuantity = async (itemId) => {
     const updatedCart = cart.map((item) =>
       item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
@@ -202,6 +220,8 @@ export const CartProvider = ({ children }) => {
         setUser,
         logout,
         toggleCart,
+        removeFromCart,
+        removeMultipleFromCart,
         increaseQuantity,
         decreaseQuantity,
         clearCart,
