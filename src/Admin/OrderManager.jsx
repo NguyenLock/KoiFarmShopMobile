@@ -22,7 +22,7 @@ export default function OrderManager() {
             style={styles.icon}
           />
           <Text style={styles.cardTitle}>Pending</Text>
-          <Text style={styles.cardValue}>{0}</Text>
+          <Text style={styles.cardValue}>{orders.filter((order) => order.status === "Pending").length.toString()}</Text>
         </Card>
 
         <Card style={[styles.card, styles.processing]}>
@@ -33,7 +33,7 @@ export default function OrderManager() {
             style={styles.icon}
           />
           <Text style={styles.cardTitle}>Processing</Text>
-          <Text style={styles.cardValue}>{0}</Text>
+          <Text style={styles.cardValue}>{orders.filter((order) => order.status === "Processing").length.toString()}</Text>
         </Card>
 
         <Card style={[styles.card, styles.shipping]}>
@@ -44,7 +44,7 @@ export default function OrderManager() {
             style={styles.icon}
           />
           <Text style={styles.cardTitle}>Shipping</Text>
-          <Text style={styles.cardValue}>{0}</Text>
+          <Text style={styles.cardValue}>{orders.filter((order) => order.status === "Shipping").length.toString()}</Text>
         </Card>
 
         <Card style={[styles.card, styles.successful]}>
@@ -55,7 +55,7 @@ export default function OrderManager() {
             style={styles.icon}
           />
           <Text style={styles.cardTitle}>Successful</Text>
-          <Text style={styles.cardValue}>{0}</Text>
+          <Text style={styles.cardValue}>{orders.filter((order) => order.status === "Successful").length.toString()}</Text>
         </Card>
 
         <Card style={[styles.card, styles.error]}>
@@ -66,7 +66,7 @@ export default function OrderManager() {
             style={styles.icon}
           />
           <Text style={styles.cardTitle}>Error</Text>
-          <Text style={styles.cardValue}>{0}</Text>
+          <Text style={styles.cardValue}>{orders.filter((order) => order.status === "Error").length.toString()}</Text>
         </Card>
 
         <Card style={[styles.card, styles.consignment]}>
@@ -77,7 +77,7 @@ export default function OrderManager() {
             style={styles.icon}
           />
           <Text style={styles.cardTitle}>Consigning</Text>
-          <Text style={styles.cardValue}>{0}</Text>
+          <Text style={styles.cardValue}>{orders.filter((order) => order.status === "Consignment").length.toString()}</Text>
         </Card>
       </View>
 

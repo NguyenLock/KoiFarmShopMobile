@@ -141,11 +141,13 @@ export const CartProvider = ({ children }) => {
       status: orderDetails.consignment ? "Consignment" : "Pending",
       createdAt: new Date(),
     };
+
     const updatedOrders = [...orders, order];
     const updatedPersonalOrders =
       order.details.userId === currentUser?.id
         ? [...personalOrders, order]
         : [...personalOrders];
+
     setOrders(updatedOrders);
     setPersonalOrders(updatedPersonalOrders);
     await AsyncStorage.setItem("orders", JSON.stringify(updatedOrders));
@@ -154,6 +156,32 @@ export const CartProvider = ({ children }) => {
       JSON.stringify(updatedPersonalOrders)
     );
     clearCart();
+  };
+
+  const updateOrderStatus = async (orderId, newStatus, userId) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.id === orderId ? { ...order, status: newStatus } : order
+      )
+    );
+
+    const updatedOrders = orders.map((order) =>
+      order.id === orderId ? { ...order, status: newStatus } : order
+    );
+
+    await AsyncStorage.setItem("orders", JSON.stringify(updatedOrders));
+
+    let personalOrders = await AsyncStorage.getItem("orders" + userId);
+    personalOrders = personalOrders ? JSON.parse(personalOrders) : [];
+
+    const updatedPersonalOrders = personalOrders.map((order) =>
+      order.id === orderId ? { ...order, status: newStatus } : order
+    );
+
+    await AsyncStorage.setItem(
+      "orders" + userId,
+      JSON.stringify(updatedPersonalOrders)
+    );
   };
 
   const saveComment = async (newComment) => {
@@ -180,6 +208,7 @@ export const CartProvider = ({ children }) => {
         clearOrders,
         saveOrder,
         saveComment,
+        updateOrderStatus,
       }}
     >
       {children}
