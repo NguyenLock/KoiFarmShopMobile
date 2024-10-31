@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 22,
     marginBottom: 10,
-    textAlign: 'justify',
+    textAlign: 'auto',
   },
   buttonContainer: {
     flexDirection: 'row',

@@ -18,7 +18,7 @@ export default function Header({ drawerRef }) {
 const styles = StyleSheet.create({
   header: {
     width: '100%',
-    height: 60,  // Đặt chiều cao cụ thể cho Header
+    height: 90,
     backgroundColor: '#470101',
     flexDirection: 'row',
     alignItems: 'center',
