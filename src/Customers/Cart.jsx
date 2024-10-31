@@ -198,7 +198,7 @@ export default function Cart({ navigation }) {
         </>
       )}
 
-      {cart.length > 1 && (
+      {/* {cart.length > 1 && (
         <View>
           <Modal
             animationType="slide"
@@ -238,7 +238,7 @@ export default function Cart({ navigation }) {
             <Ionicons name="trash" size={26} color="white" />
           </Pressable>
         </View>
-      )}
+      )} */}
     </View>
   );
 }
