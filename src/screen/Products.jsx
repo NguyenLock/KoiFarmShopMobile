@@ -51,6 +51,7 @@ export default function Products({ navigation }) {
       setSelectedBreed("");
       setSearch("");
       setFilteredFishes(fishes);
+      setIsVisible(false); // Hide filter options when screen comes into focus
     }, [fishes])
   );
 
@@ -90,66 +91,71 @@ export default function Products({ navigation }) {
   };
 
   const handleFilterButtonPress = () => {
-    if (isVisible) {
-      // Reset the filter state
-      setSelectedBreed("");
-      setFilteredFishes(fishes);
-    }
     setIsVisible(!isVisible);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <View style={styles.filterContainer}>
-          <Searchbar
-            placeholder="Search koi..."
-            value={search}
-            onChangeText={setSearch}
-            style={styles.searchInput}
-          />
-          <TouchableOpacity
-            style={styles.filterButton}
-            onPress={handleFilterButtonPress}
-          >
-            <Ionicons
-              name="filter"
-              size={20}
-              color="#fff"
-              style={styles.buttonIcon}
-            />
-            <Text style={styles.filterButtonText}>Filter</Text>
-          </TouchableOpacity>
-        </View>
+        <Text style={styles.headerTitle}>Koi Collection</Text>
+        <TouchableOpacity style={styles.cartIcon} onPress={navigateToCart}>
+          <Ionicons name="cart-outline" size={24} color="black" />
+          {cart.length > 0 && (
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>{cart.length}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
 
-        {isVisible && (
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContainer}
+      <View style={styles.filterContainer}>
+        <Searchbar
+          placeholder="Search koi..."
+          value={search}
+          onChangeText={setSearch}
+          style={styles.searchInput}
+        />
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={handleFilterButtonPress}
+        >
+          <Ionicons
+            name="filter"
+            size={20}
+            color="#fff"
+            style={styles.buttonIcon}
+          />
+          <Text style={styles.filterButtonText}>Filter</Text>
+        </TouchableOpacity>
+      </View>
+
+      {isVisible && (
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContainer}
+        >
+          <Chip
+            mode="outlined"
+            selected={selectedBreed === ""}
+            onPress={() => handleFilterByBreed("")}
+            style={styles.chip}
           >
+            All Breeds
+          </Chip>
+          {breeds.map((breed) => (
             <Chip
+              key={breed}
               mode="outlined"
-              selected={selectedBreed === ""}
-              onPress={() => handleFilterByBreed("")}
+              selected={selectedBreed === breed}
+              onPress={() => handleFilterByBreed(breed)}
               style={styles.chip}
             >
-              All Breeds
+              {breed}
             </Chip>
-            {breeds.map((breed) => (
-              <Chip
-                key={breed}
-                mode="outlined"
-                selected={selectedBreed === breed}
-                onPress={() => handleFilterByBreed(breed)}
-                style={styles.chip}
-              >
-                {breed}
-              </Chip>
-            ))}
-          </ScrollView>
-        )}
-      </View>
+          ))}
+        </ScrollView>
+      )}
 
       {search && (
         <View style={styles.searchResultsContainer}>
@@ -199,8 +205,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerContainer: {
-    flexDirection: "column",
-    marginBottom: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 35,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  cartIcon: {
+    position: "relative",
+    padding: 10,
+  },
+  cartBadge: {
+    position: "absolute",
+    top: -3,
+    right: -2,
+    backgroundColor: "red",
+    borderRadius: 10,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+  },
+  cartBadgeText: {
+    color: "#fff",
+    fontSize: 12,
   },
   filterContainer: {
     flexDirection: "row",
