@@ -8,10 +8,12 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { CartContext } from "../contexts/CartContext";
 import KoiFish from "../components/KoiFish";
 import { Ionicons } from "@expo/vector-icons";
+import { Chip, Searchbar } from "react-native-paper";
 
 export default function Products({ navigation }) {
   const [fishes, setFishes] = useState([]);
@@ -20,7 +22,7 @@ export default function Products({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedBreed, setSelectedBreed] = useState("");
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false); // Add visibility state for filter options
   const { cart, currentUser } = useContext(CartContext);
 
   const getKoiFishes = async () => {
@@ -42,6 +44,15 @@ export default function Products({ navigation }) {
   useEffect(() => {
     handleSearch();
   }, [search]);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Reset the filter state when the screen comes into focus
+      setSelectedBreed("");
+      setSearch("");
+      setFilteredFishes(fishes);
+    }, [fishes])
+  );
 
   const handleSearch = () => {
     if (search) {
@@ -70,10 +81,6 @@ export default function Products({ navigation }) {
     }
   };
 
-  const handleFilterButtonPress = () => {
-    setIsVisible(!isVisible);
-  };
-
   const navigateToCart = () => {
     if (!currentUser) {
       navigation.navigate("Login");
@@ -82,92 +89,67 @@ export default function Products({ navigation }) {
     navigation.navigate("Cart");
   };
 
+  const handleFilterButtonPress = () => {
+    if (isVisible) {
+      // Reset the filter state
+      setSelectedBreed("");
+      setFilteredFishes(fishes);
+    }
+    setIsVisible(!isVisible);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Koi Collection</Text>
-        <TouchableOpacity style={styles.cartIcon} onPress={navigateToCart}>
-          <Ionicons name="cart-outline" size={24} color="black" />
-          {cart.length > 0 && (
-            <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>{cart.length}</Text>
-            </View>
-          )}
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.filterContainer}>
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchInput}
+        <View style={styles.filterContainer}>
+          <Searchbar
             placeholder="Search koi..."
             value={search}
             onChangeText={setSearch}
+            style={styles.searchInput}
           />
-          <Ionicons
-            name="search"
-            size={20}
-            color="#000"
-            style={styles.searchIcon}
-          />
-        </View>
-        <TouchableOpacity
-          style={styles.filterButton}
-          onPress={handleFilterButtonPress}
-        >
-          <Ionicons
-            name="filter"
-            size={20}
-            color="#fff"
-            style={styles.buttonIcon}
-          />
-          <Text style={styles.filterButtonText}>Filter</Text>
-        </TouchableOpacity>
-      </View>
-
-      {isVisible && (
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContainer}
-        >
           <TouchableOpacity
-            style={[
-              styles.breedButton,
-              selectedBreed === "" && styles.selectedBreedButton,
-            ]}
-            onPress={() => handleFilterByBreed("")}
+            style={styles.filterButton}
+            onPress={handleFilterButtonPress}
           >
-            <Text
-              style={[
-                styles.breedButtonText,
-                selectedBreed === "" && styles.selectedBreedButtonText,
-              ]}
+            <Ionicons
+              name="filter"
+              size={20}
+              color="#fff"
+              style={styles.buttonIcon}
+            />
+            <Text style={styles.filterButtonText}>Filter</Text>
+          </TouchableOpacity>
+        </View>
+
+        {isVisible && (
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContainer}
+          >
+            <Chip
+              mode="outlined"
+              selected={selectedBreed === ""}
+              onPress={() => handleFilterByBreed("")}
+              style={styles.chip}
             >
               All Breeds
-            </Text>
-          </TouchableOpacity>
-          {breeds.map((breed) => (
-            <TouchableOpacity
-              key={breed}
-              style={[
-                styles.breedButton,
-                selectedBreed === breed && styles.selectedBreedButton,
-              ]}
-              onPress={() => handleFilterByBreed(breed)}
-            >
-              <Text
-                style={[
-                  styles.breedButtonText,
-                  selectedBreed === breed && styles.selectedBreedButtonText,
-                ]}
+            </Chip>
+            {breeds.map((breed) => (
+              <Chip
+                key={breed}
+                mode="outlined"
+                selected={selectedBreed === breed}
+                onPress={() => handleFilterByBreed(breed)}
+                style={styles.chip}
               >
                 {breed}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      )}
+              </Chip>
+            ))}
+          </ScrollView>
+        )}
+      </View>
 
       {search && (
         <View style={styles.searchResultsContainer}>
@@ -189,7 +171,7 @@ export default function Products({ navigation }) {
           <FlatList
             style={styles.list}
             data={filteredFishes}
-            keyExtractor={(item) => item.id.toString()} // Ensuring unique key as a string
+            keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
               <TouchableOpacity
@@ -217,56 +199,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 35,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  cartIcon: {
-    position: "relative",
-    padding: 10,
-  },
-  cartBadge: {
-    position: "absolute",
-    top: -3,
-    right: -2,
-    backgroundColor: "red",
-    borderRadius: 10,
-    paddingHorizontal: 5,
-    paddingVertical: 2,
-  },
-  cartBadgeText: {
-    color: "#fff",
-    fontSize: 12,
+    flexDirection: "column",
+    marginBottom: 20,
   },
   filterContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
   },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+  searchInput: {
     flex: 1,
     marginRight: 10,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "#fff",
-  },
-  searchInput: {
-    flex: 1,
-    padding: 10,
-  },
-  searchIcon: {
-    padding: 10,
   },
   filterButton: {
     flexDirection: "row",
@@ -283,7 +227,6 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     marginRight: 5,
-    color: "#fff",
   },
   filterButtonText: {
     color: "#fff",
@@ -292,26 +235,11 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingHorizontal: 5,
-    paddingVertical: 5,
-    height: 45,
+    paddingVertical: 10,
   },
-  breedButton: {
-    padding: 8,
-    backgroundColor: "#e4e4e4",
-    borderRadius: 10,
+  chip: {
     marginHorizontal: 5,
-    height: 40,
-    justifyContent: "center",
-  },
-  selectedBreedButton: {
-    backgroundColor: "gray",
-  },
-  breedButtonText: {
-    color: "#000",
-  },
-  selectedBreedButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
+    paddingHorizontal: 10,
   },
   searchResultsContainer: {
     marginBottom: 10,
