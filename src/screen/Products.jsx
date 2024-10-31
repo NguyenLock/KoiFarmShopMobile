@@ -282,9 +282,9 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   listContainer: {
-    flex: 1,
-    marginTop: 15,
-    paddingBottom: 20,
+    flex: 100,
+    marginTop: 10,
+    paddingBottom: 10,
   },
   list: {
     flex: 1,
