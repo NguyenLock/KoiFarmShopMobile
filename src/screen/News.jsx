@@ -1,48 +1,48 @@
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import Fontisto from '@expo/vector-icons/Fontisto';
-import React from 'react'
+import React from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-export default function News({ navigation }) {
 
+export default function News({ navigation }) {
 
   const data = [
     {
       id: '1',
-      title: 'Các trại cá koi nhật bản (Koi Farm Japan)',
+      title: 'Koi Farms in Japan',
       date: 'Sun 03, 2020',
-      description: 'Xuất phát từ tình yêu với cá Koi Nhật Bản, những giống cá này không chỉ gây ấn tượng với vẻ đẹp sống động và màu sắc rực rỡ, mà còn mang trong mình những giá trị phong thủy sâu sắc. Cá Koi tượng trưng cho sự bền bỉ, may mắn và sự phát triển trong cuộc sống. Mỗi giống cá Koi đều có ý nghĩa riêng, phản ánh những khát vọng và mong ước của con người, làm cho chúng trở thành lựa chọn phổ biến trong việc trang trí cảnh quan và tạo không gian thư giãn. Sự cuốn hút của cá Koi không chỉ nằm ở hình thức mà còn ở những giá trị tinh thần mà chúng mang lại.',
+      description: 'Originating from a love for Japanese Koi fish, these fish not only impress with their vibrant beauty and bright colors but also carry deep feng shui values. Koi fish symbolize resilience, luck, and growth in life. Each type of Koi fish has its own meaning, reflecting human aspirations and desires, making them a popular choice for landscape decoration and creating relaxing spaces. The appeal of Koi fish lies not only in their appearance but also in the spiritual values they bring.',
       author: 'Koi Quang Minh',
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4b9v7aEUi9OICVrd9kCn3c6XTtYjrq9eRnA&s',
     },
     {
       id: '2',
-      title: 'Ý nghĩa của việc nuôi cá koi theo chuyên gia phong thủy',
+      title: 'The Meaning of Keeping Koi Fish According to Feng Shui Experts',
       date: 'Mon 25, 2020',
-      description: 'Cá Koi từ lâu đã được coi là biểu tượng may mắn, thịnh vượng và trường thọ trong văn hóa phương Đông, tượng trưng cho sự kiên trì và sức mạnh. Truyền thuyết kể rằng khi cá Koi vượt thác thành công, nó sẽ hóa thành rồng - biểu tượng cao quý trong văn hóa Á Đông, thể hiện sự nỗ lực và khát vọng vượt khó. Mỗi màu sắc cá Koi mang ý nghĩa phong thủy riêng: cá Koi đỏ tượng trưng cho tình yêu, cá Koi vàng cho tài lộc, và cá Koi trắng cho bình an. Trong phong thủy, dòng nước trong bể cá Koi tượng trưng cho dòng chảy của tài lộc và sức khỏe. Ngày nay, cá Koi không chỉ là thú vui tao nhã mà còn được nuôi để thu hút may mắn và tài lộc, trở thành một phần trong đời sống của nhiều gia đình Á Đông và thế giới.',
-      author: 'Koi Quang Nhật',
+      description: 'Koi fish have long been considered a symbol of luck, prosperity, and longevity in Eastern culture, representing perseverance and strength. Legend has it that when a Koi fish successfully climbs the waterfall, it transforms into a dragon—a noble symbol in East Asian culture, representing effort and overcoming challenges. Each color of Koi fish has its own feng shui meaning: red Koi represents love, yellow Koi represents wealth, and white Koi symbolizes peace. In feng shui, the water flow in a Koi fish pond represents the flow of wealth and health. Nowadays, Koi fish are not only a noble hobby but are also kept to attract luck and wealth, becoming a part of life for many families in Asia and around the world.',
+      author: 'Koi Quang Nhat',
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyiawRQexXqYeSMuhcUclHPe6hniwgRGONJQ&s',
     },
     {
       id: '3',
-      title: 'Các loại cá koi nổi bật và ý nghĩa của chúng',
+      title: 'Popular Types of Koi Fish and Their Meanings',
       date: 'Thu 25, 2020',
-      description: 'Cá koi, biểu tượng của sự bền bỉ và may mắn, là một trong những loài cá cảnh được ưa chuộng nhất. Có nhiều giống cá koi khác nhau, mỗi loại mang ý nghĩa phong thủy riêng: Cá koi màu trắng với các vết đỏ. Đại diện cho sự thuần khiết và sự đổi mới. Cá koi có nền trắng với các vết đỏ và đen. Biểu trưng cho sự kiên cường và sự phát triển. Cá koi đen với các vết trắng, mang ý nghĩa về sự cân bằng và hòa hợp. Cá koi có nền đen với các vết đỏ và trắng, tượng trưng cho sức mạnh và quyền lực. Cá koi với màu xanh lam và đỏ. Đại diện cho sự bình an và hạnh phúc. Các giống cá koi này không chỉ đẹp mắt mà còn mang lại ý nghĩa tốt lành cho những ai sở hữu chúng.',
+      description: 'Koi fish, a symbol of resilience and luck, are among the most popular ornamental fish. There are different types of Koi fish, each with its own feng shui meaning: White Koi with red spots represents purity and renewal. White Koi with red and black spots represents resilience and growth. Black Koi with white spots symbolizes balance and harmony. Black Koi with red and white spots represents strength and power. Blue and red Koi represents peace and happiness. These types of Koi fish are not only beautiful but also bring good luck to those who own them.',
       author: 'Koi Quang Trinh',
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjXecE-soHFxZGxjBjo_BFSr_JjbSwGb5j_w&s',
     },
     {
       id: '4',
-      title: 'Làm thế nào để chăm sóc cá koi đúng cách?',
+      title: 'How to Properly Care for Koi Fish',
       date: 'Sat 25, 2020',
-      description: 'Hướng dẫn chi tiết cách chăm sóc và nuôi dưỡng cá koi tại nhà: Lựa chọn bể có kích thước phù hợp với số lượng cá. Nên có hệ thống lọc nước để giữ nước sạch. Kiểm tra chất lượng nước thường xuyên. Đảm bảo pH từ 6.5 đến 7.5 và thay nước định kỳ. Cung cấp thức ăn chuyên dụng cho cá koi, tránh cho ăn quá nhiều để không làm ô nhiễm nước. Giữ nhiệt độ nước ổn định, khoảng 18-24°C, để cá phát triển khỏe mạnh. Theo dõi tình trạng sức khỏe của cá, phát hiện sớm dấu hiệu bệnh tật và điều trị kịp thời.',
+      description: 'Detailed guide on how to care for and raise Koi fish at home: Choose a tank that is suitable for the number of fish. A filtration system is recommended to keep the water clean. Regularly check water quality. Maintain a pH level between 6.5 and 7.5, and change the water regularly. Provide specialized food for Koi fish, avoiding overfeeding to prevent water pollution. Keep the water temperature stable, around 18-24°C, for healthy growth. Monitor the fish’s health, detect signs of illness early, and provide timely treatment.',
       author: 'Koi Gia Minh',
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPSdAmbaGwgAT8-1UR_WNBFh3jAuKdxfCLgw&s',
     },
     {
       id: '5',
-      title: 'Mẹo nuôi cá koi cho người mới bắt đầu',
+      title: 'Koi Fish Care Tips for Beginners',
       date: 'Sun 25, 2020',
-      description: 'Những lưu ý quan trọng cho người mới bắt đầu nuôi cá Koi: Đảm bảo có hệ thống lọc tốt. Duy trì pH từ 6.5 đến 7.5. Sử dụng thức ăn chuyên dụng và không cho ăn quá nhiều. Khoảng 18-24°C. Phát hiện sớm dấu hiệu bệnh. Tránh nuôi quá đông. Đặt đá hoặc cây cỏ trong bể. Những lưu ý này sẽ giúp bạn nuôi cá koi thành công!',
+      description: 'Important tips for beginners in Koi fish care: Ensure a good filtration system. Maintain a pH level between 6.5 and 7.5. Use specialized food and avoid overfeeding. Keep the temperature between 18-24°C. Detect signs of illness early. Avoid overcrowding. Place stones or plants in the tank. These tips will help you successfully care for Koi fish!',
       author: 'Koi Gia Huy',
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP6P83Qvm2LKj27rK_LXlC6fr3wl5r0SRp6A&s',
     },

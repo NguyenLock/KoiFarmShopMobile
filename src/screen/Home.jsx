@@ -28,6 +28,7 @@ export default function Home() {
   const navigation = useNavigation();
   const flatListRef = useRef(null);
   
+  // Add duplicate images for smooth scrolling
   const getExtendedImages = () => {
     return [
       originalImages[originalImages.length - 1],
@@ -45,7 +46,7 @@ export default function Home() {
     });
   }, []);
 
-  // Auto scroll effect
+  // Auto-scroll effect
   useEffect(() => {
     const autoScroll = setInterval(() => {
       const nextIndex = (activeIndex + 1) % (images.length - 2) + 1;
@@ -105,16 +106,16 @@ export default function Home() {
 
       {/* Introduction Section */}
       <View style={styles.introContainer}>
-        <Text style={styles.title}>GIỚI THIỆU</Text>
-        <Text style={styles.subtitle}>về Koi Japan-VN</Text>
+        <Text style={styles.title}>INTRODUCTION</Text>
+        <Text style={styles.subtitle}>About Koi Japan-VN</Text>
         <Text style={styles.content}>
-          Cá koi Nhật Bản là cá koi thuần chủng được nhập trực tiếp từ các trang trại cá koi Nhật Bản về Việt Nam.
+          Japanese Koi fish are purebred Koi imported directly from Japanese Koi farms to Vietnam.
         </Text>
         <Text style={styles.content}>
-          Koi là một loại cá chép đã được thuần hóa, lai tạo và được ưa chuộng tại Nhật Bản để làm cảnh. Bên cạnh vẻ đẹp nổi bật, cá koi còn được biết đến là một loại cá mang lại sự tốt lành, luôn mang lại may mắn cho người nuôi.
+          Koi is a type of carp that has been domesticated, bred, and is highly valued in Japan as ornamental fish. Besides its outstanding beauty, Koi fish are also known to bring good fortune and are believed to bring luck to the keeper.
         </Text>
         <Text style={styles.content}>
-          Siêu Thị Cá Koi VN chuyên cung cấp cho khách hàng những cá koi chất lượng, với các giống được chọn lọc từ các trại nổi tiếng.
+          Koi Fish Supermarket VN specializes in providing customers with quality Koi fish, selected from renowned farms.
         </Text>
       </View>
 
