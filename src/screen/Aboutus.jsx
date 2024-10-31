@@ -4,71 +4,70 @@ import React from 'react';
 export default function Aboutus() {
   return (
     <ScrollView style={styles.container}>
-      {/* Phần Banner */}
+      {/* Banner Section */}
       <View style={styles.bannerContainer}>
         <Image 
           source={require('../../assets/logo-ca-koi.png')} 
           style={styles.logo}
         />
         <Text style={styles.title}>Koi Japan-VN</Text>
-        <Text style={styles.subtitle}>Chia sẻ vẻ đẹp của thiên nhiên</Text>
+        <Text style={styles.subtitle}>Sharing the beauty of nature</Text>
       </View>
 
-      {/* Phần Giới thiệu câu chuyện */}
+      {/* Our Story Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Câu chuyện của chúng tôi</Text>
+        <Text style={styles.sectionTitle}>Our Story</Text>
         <Text style={styles.text}>
-          Được thành lập vào năm 2020, CaKoi Farm bắt đầu từ niềm đam mê với những 
-          chú cá Koi xinh đẹp. Chúng tôi khởi đầu với một trại nhỏ và tình yêu to lớn 
-          dành cho loài cá Nhật Bản này, và hôm nay, chúng tôi tự hào là nơi cung cấp 
-          cá Koi chất lượng cao cho khách hàng khắp nơi.
+          Founded in 2020, CaKoi Farm began from a passion for beautiful Koi fish.
+          We started with a small farm and a big love for this Japanese fish, and today, 
+          we are proud to supply high-quality Koi fish to customers everywhere.
         </Text>
       </View>
 
-      {/* Phần Sứ mệnh */}
+      {/* Our Mission Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Sứ mệnh của chúng tôi</Text>
+        <Text style={styles.sectionTitle}>Our Mission</Text>
         <Text style={styles.text}>
-          Sứ mệnh của CaKoi Farm là mang lại niềm vui và sự thư giãn cho mọi người 
-          thông qua vẻ đẹp của cá Koi. Chúng tôi cam kết cung cấp những chú cá khỏe mạnh, 
-          sinh động và dịch vụ tư vấn tận tình cho khách hàng.
+          The mission of CaKoi Farm is to bring joy and relaxation to people through 
+          the beauty of Koi fish. We are committed to providing healthy, vibrant fish 
+          and attentive consulting services for our customers.
         </Text>
       </View>
 
-      {/* Phần Giá trị */}
+      {/* Our Values Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Giá trị của chúng tôi</Text>
+        <Text style={styles.sectionTitle}>Our Values</Text>
         <View style={styles.valueItem}>
-          <Text style={styles.valueTitle}>Chất lượng</Text>
+          <Text style={styles.valueTitle}>Quality</Text>
           <Text style={styles.text}>
-            Chúng tôi chọn lọc kỹ càng từng chú cá để đảm bảo sức khỏe và vẻ đẹp tuyệt vời.
+            We carefully select each fish to ensure excellent health and beauty.
           </Text>
         </View>
         <View style={styles.valueItem}>
-          <Text style={styles.valueTitle}>Chuyên nghiệp</Text>
+          <Text style={styles.valueTitle}>Professionalism</Text>
           <Text style={styles.text}>
-            Đội ngũ của chúng tôi có kiến thức chuyên sâu và sẵn sàng tư vấn mọi lúc.
+            Our team has deep knowledge and is always ready to offer advice.
           </Text>
         </View>
         <View style={styles.valueItem}>
-          <Text style={styles.valueTitle}>Khách hàng là ưu tiên</Text>
+          <Text style={styles.valueTitle}>Customer First</Text>
           <Text style={styles.text}>
-            Chúng tôi đặt sự hài lòng của khách hàng lên hàng đầu và luôn đồng hành cùng bạn.
+            We put customer satisfaction first and are always here for you.
           </Text>
         </View>
       </View>
 
-      {/* Thông tin liên hệ */}
+      {/* Contact Information */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Ghé thăm chúng tôi</Text>
-        <Text style={styles.contactText}>Địa chỉ: 123 Trại Cá Koi, Quận 9, TP. HCM</Text>
-        <Text style={styles.contactText}>Điện thoại: (84) 123-456-789</Text>
+        <Text style={styles.sectionTitle}>Visit Us</Text>
+        <Text style={styles.contactText}>Address: 123 Koi Fish Farm, District 9, Ho Chi Minh City</Text>
+        <Text style={styles.contactText}>Phone: (84) 123-456-789</Text>
         <Text style={styles.contactText}>Email: info@cakoi.com</Text>
       </View>
 
       {/* Footer */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>© 2024 CaKoi Farm. Mọi quyền được bảo lưu.</Text>
+        <Text style={styles.footerText}>© 2024 CaKoi Farm. All rights reserved.</Text>
       </View>
     </ScrollView>
   );

@@ -12,6 +12,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  TouchableOpacity,
 } from "react-native";
 
 export default function ContactUs() {
@@ -50,7 +51,7 @@ export default function ContactUs() {
               <TextInput
                 style={styles.input}
                 placeholder="FullName"
-                value={name}  
+                value={name}
                 onChangeText={setName}
               />
               <TextInput
@@ -68,7 +69,9 @@ export default function ContactUs() {
                 multiline
                 numberOfLines={4}
               />
-              <Button title="Send" onPress={handleSubmit} style={styles.button} />
+              <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                <Text style={styles.buttonText}>Đăng nhập</Text>
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
@@ -86,13 +89,15 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "rgba(249, 250, 253, 0.8)",
+    flex: 1,
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: "bold",
-    marginBottom: 20,
+    color: "#470101",
+    marginBottom: 30,
     textAlign: "center",
-    color: "#fff",
   },
   input: {
     width: "100%",
@@ -107,9 +112,22 @@ const styles = StyleSheet.create({
   messageInput: {
     height: 100,
     textAlignVertical: "top",
+    paddingVertical: 10,
   },
   background: {
     flex: 1,
-    opacity: 0.8
+  },
+  button: {
+    backgroundColor: "#470101",
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: "center",
+    marginVertical: 15,
+    width: "100%",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });

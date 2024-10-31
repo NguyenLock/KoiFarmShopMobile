@@ -67,10 +67,10 @@ export default function Login() {
           onChangeText={setPassword}
         />
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Đăng nhập</Text>
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <Text style={styles.link}>Bạn chưa có tài khoản? Đăng ký</Text>
+          <Text style={styles.link}>Don't have an account yet? Register Now</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
